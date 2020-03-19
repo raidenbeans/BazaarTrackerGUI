@@ -1,5 +1,5 @@
 /* anything that shouldnt be dragged */
-.category, .button, .categoryImage, .buttonImage, #datatypeDropdown {
+.category, .button, .categoryImage, .buttonImage, #datatypeDropdown, #loadingImg {
     user-drag: none; 
     user-select: none;
     -moz-user-select: none;
@@ -143,3 +143,18 @@ input {
 #datatypeDropdown:hover #datatypeDropdown-content {
     display: block;
 }
+
+/* Loading img */
+#loadingImg {
+    position: absolute;
+    left: 50%;
+    display: none;
+    animation: rotateLoading 5s infinite linear;
+}
+
+@keyframes rotateLoading {
+    from {
+        transform: rotate(0deg);
+    } to {
+        transform: rotate(359deg);
+    }

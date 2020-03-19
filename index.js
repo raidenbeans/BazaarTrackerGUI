@@ -1,6 +1,5 @@
 // item buttons creation and toggle logic
 const __filesDir = '/productinfo/'
-//const __filesDir = 'C:\\Users\\RaidenW\\Desktop\\BazaarTracker\\productinfo\\'
 const __categoriesFileName = 'categories.json'
 
 const farmingBtn = document.getElementById('farmingBtn')
@@ -13,13 +12,9 @@ var categories;
 loadJSONFile(__filesDir + __categoriesFileName, function (response) {    
     categories = JSON.parse(response);
     
-    console.log(response);
     for (var category in categories) {
-        console.log(category);
         for (var i = 0; i < categories.length; i += 2) {
             productIds.push(categories[category][i].replace('\.product', '').replace('\+', ':'));
-            
-            console.log(productIds[i]);
         }
     }
     
@@ -94,7 +89,6 @@ function loadJSONFile(file, callback) {
     xhr.open('GET', file, true);
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status == '200') {
-            console.log(xhr.responseText);
             callback(xhr.responseText);
         }
     }
@@ -122,7 +116,6 @@ for (var input of categoryInputs) {
 function updateCategoryCheckbox(checked, chbx) {
     updateCheckbox(checked, chbx);
     
-//    console.log(chbx.parentElement.parentElement.getElementsByClassName('dropdown-content'));
     for (var n of chbx.parentElement.parentElement.getElementsByClassName('dropdown-content')[0].childNodes) {
         n.style.display = checked ? 'block' : 'none';
     }
@@ -169,7 +162,11 @@ window.addEventListener('resize', function(e) {
 
 var dataToDisplay = new Array();
 function updateCanvas(propertyType, selectedItemId) {
+    fixDPI();
+    document.getElementById('loadingImg').style.display = 'block';
     loadJSONFile(__filesDir + selectedItemId.replace(':', '+') + '.product', function (responseText) {
+        document.getElementById('loadingImg').style.display = 'none';
+        console.log(document.getElementById('loadingImg'));
         var json = JSON.parse(responseText);
         dataToDisplay = new Array();
         
@@ -233,7 +230,7 @@ function updateCanvas(propertyType, selectedItemId) {
             }
         }
         dataToDisplay.sort(function(a, b) {
-            return a - b;
+            return a.data - b.data;
         });
         
         drawGraph();        
@@ -312,7 +309,7 @@ function findItemName(item) {
     }
 }
 
-// canvas data on hover logic
+// canvas specific data on hover logic
 document.getElementById('graph').addEventListener('mousemove', function (event) {
     const y = 20;
     
@@ -333,8 +330,12 @@ document.getElementById('graph').addEventListener('mousemove', function (event) 
             }
         }
         
-        ctx.fillText('Data: ' + d, x, y);
-        ctx.fillText('Timestamp: ' + getTimeStampToTimeElapsed(ts) + ' ago', x, y * 2);
+        var textX = x;
+        if (x > graph.width / 2) {
+            textX -= 200;
+        }
+        ctx.fillText('Data: ' + d, textX, y);
+        ctx.fillText('Timestamp: ' + getTimeStampToTimeElapsed(ts) + ' ago', textX, y * 2);
         ctx.moveTo(x, 0);
         ctx.lineTo(x, graph.height);
         
