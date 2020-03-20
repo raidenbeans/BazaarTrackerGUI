@@ -1,5 +1,5 @@
 /* anything that shouldnt be dragged */
-.category, .button, .categoryImage, .buttonImage, #datatypeDropdown, #loadingImg {
+.category, .button, .categoryImage, .buttonImage, #datatypeDropdown, .datatypeDropdown-button, #loadingImg, .imageEnchanted, .timeButton {
     user-drag: none; 
     user-select: none;
     -moz-user-select: none;
@@ -28,12 +28,12 @@ input {
     height: 0;
 }
 
-.category:hover, .button:hover {
+.category:hover, .button:hover, .timeButton:hover {
     transition-duration: 0.25s;
     background-color: #dbdbdb;
 }
 
-.categoryImage, .buttonImage {
+.categoryImage, .buttonImage, .imageEnchanted {
     width: 40%;
     height: 40%;
 }
@@ -57,29 +57,6 @@ input {
     position: relative;
     margin: 4px 2px 4px 3%;
 }
-/*
-.imageEnchanted {
-    background-blend-mode: normal;
-    animation: rotation 5s infinite linear;
-    
-    width: 60px;
-    height: 60px;
-    user-drag: none; 
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-drag: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-}
-
-@keyframes rotation {
-    from {
-        transform: rotate(0deg);
-    } to {
-        transform: rotate(359deg);
-    }
-}
-*/
 
 /* graph canvas */
 #graphContainer, #datatypeDropdown {
@@ -124,24 +101,41 @@ input {
     width: 140px;
     margin: 1% 1% 1% 31%;
     height: 4%;
-    display: inline-block;
-    float: left;
+    display: none;
     border: 2px solid #4CAF50;
     text-align: center;
     vertical-align: center;
+    font-size: 16px;
 }
 
 
 #datatypeDropdown-content {
     display: none;
-    position: absolute;
-    padding: 0px 3px;
+    width: 170px;
+    border: 1px solid black;
     background-color: white;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
 #datatypeDropdown:hover #datatypeDropdown-content {
     display: block;
+}
+
+/* Time buttons */
+.timeButton {
+    border: 2px solid black;
+    border-right: none;
+    position: relative;
+    padding: 2px 4px;
+}
+
+.timeButton:last-child {
+    border-right: 2px solid black;
+}
+
+#timeButtonsContainer {
+    display: none;
+    margin: 1% 1% 1% 58%;
+    position: fixed;
 }
 
 /* Loading img */
@@ -158,3 +152,4 @@ input {
     } to {
         transform: rotate(359deg);
     }
+}

@@ -1,7 +1,1 @@
-DO TIMESTAMPS -- IMPORTANT
-
-I THINK I MESSED SOMETHING UP -- GRAPHS ARE ALL GOING UP
-
-Fix not being able to see specific price/timestamp when cursor is all the way to the right
-
 Check if on the server or if running w/ electron. If running with electron, download all the product info + live updates on program start.
