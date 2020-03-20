@@ -1,1 +1,5 @@
+different colors for each property + support for viewing multiple properties
+
+less empty space on graph. Maybe thicker line?
+
 Check if on the server or if running w/ electron. If running with electron, download all the product info + live updates on program start.

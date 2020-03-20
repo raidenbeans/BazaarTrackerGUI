@@ -10,7 +10,7 @@ const odditiesBtn = document.getElementById('odditiesBtn')
 
 var categories;
 loadJSONFile(__filesDir + __categoriesFileName, function (response) {    
-    categories = JSON.parse(response);
+categories = JSON.parse(response);
     
     for (var category in categories) {
         for (var i = 0; i < categories.length; i += 2) {
@@ -227,7 +227,7 @@ function updateCanvas() {
     document.getElementById('loadingImg').style.display = 'block';
     loadJSONFile(__filesDir + selectedItemId.replace(':', '+') + '.product', function (responseText) {
         document.getElementById('loadingImg').style.display = 'none';
-        var json = JSON.parse(responseText);
+        var json = JSON.parse(responseText + "}}");
         dataToDisplay = new Array();
         
         var j = 0;
@@ -304,10 +304,14 @@ function updateCanvas() {
     });
 }
 
+var graphHeightAdjusted = 0;
+var graphHeight = 0;
+var graphHighestY = -1;
 function drawGraph(extra) {
     const graph = document.getElementById('graph');
     const graphWidth = graph.width;
-    const graphHeightAdjusted = graph.height - 20; // - int so there is padding on the top
+    graphHeight = graph.height;
+    graphHeightAdjusted = graph.height - 20; // - 20 so there is padding on the top
     const ctx = graph.getContext('2d');
     const xSpacing = graphWidth / dataToDisplay.length;
     
@@ -325,11 +329,14 @@ function drawGraph(extra) {
     
     // drawing the graph
     // get highest X and Y values to ensure graph fits on screen
-    var highestX = 1;
-    var highestY = 1;
-    for (var dataObj of dataToDisplay) {            
+    var highestX = -1;
+    var lowestX = 999999999999;
+    var lowestY = 999999999999;
+    for (var dataObj of dataToDisplay) {
         if (dataObj.timeStamp > highestX) highestX = dataObj.timeStamp;
-        if (dataObj.data > highestY) highestY = dataObj.data;
+        if (dataObj.data > graphHighestY) graphHighestY = dataObj.data;
+        if (dataObj.timeStamp < lowestX) lowestX = dataObj.timeStamp;
+        if (dataObj.data < lowestY) lowestY = dataObj.data;
     }
     
     ctx.beginPath();
@@ -338,7 +345,7 @@ function drawGraph(extra) {
         var timeStamp = dataToDisplay[i].timeStamp;
         var data = dataToDisplay[i].data;
         var x = xSpacing * i;
-        var y = graph.height - (data * graphHeightAdjusted / highestY);
+        var y = getAdjustedY(graphHeight, data, graphHeightAdjusted, graphHighestY);
         if (i === 0) {
             ctx.moveTo(0, y);
         } else {
@@ -349,6 +356,10 @@ function drawGraph(extra) {
     ctx.stroke();
     
     if (extra !== undefined) extra(graph, ctx);
+}
+
+function getAdjustedY(height, y, heightAdjusted, highestY) {
+    return height - (y * heightAdjusted / highestY);
 }
 
 function updateSelectedButton(checked, btn) {
@@ -396,11 +407,11 @@ document.getElementById('graphContainer').addEventListener('mousemove', function
         
         var d = 0;
         var ts = 0;
-        var lowestDist = 999999;
+        var lowestDist1 = 999999;
         for (var i = 0; i < dataToDisplay.length; i++) {
             var dist = Math.abs(graph.width / dataToDisplay.length * i - x)
-            if (lowestDist > dist) {
-                lowestDist = dist;
+            if (lowestDist1 > dist) {
+                lowestDist1 = dist;
                 Math.abs(graph.width / dataToDisplay.length * i - x);
                 ts = dataToDisplay[i].timeStamp;
                 d = dataToDisplay[i].data;
@@ -409,6 +420,7 @@ document.getElementById('graphContainer').addEventListener('mousemove', function
             }
         }
         
+        // drawing Text and line
         var textX = finalX;
         if (x > graph.width / 2) {
             textX -= 200;
@@ -429,6 +441,14 @@ document.getElementById('graphContainer').addEventListener('mousemove', function
         ctx.moveTo(finalX, 0);
         ctx.lineTo(finalX, graph.height);
         
+        ctx.stroke();
+        
+        // drawing circle that intersects line
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        ctx.arc(finalX, getAdjustedY(graphHeight, d, graphHeightAdjusted, graphHighestY), 6, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
         ctx.stroke();
     });
 })
