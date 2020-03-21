@@ -1,5 +1,5 @@
 different colors for each property + support for viewing multiple properties
 
-less empty space on graph. Maybe thicker line?
+less empty space on graph. Make lowest Y point on graph almost touch bottom, and highest Y point on graph almost touch top. Maybe thicker line?
 
 Check if on the server or if running w/ electron. If running with electron, download all the product info + live updates on program start.

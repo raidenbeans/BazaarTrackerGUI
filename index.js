@@ -313,7 +313,6 @@ function drawGraph(extra) {
     graphHeight = graph.height;
     graphHeightAdjusted = graph.height - 20; // - 20 so there is padding on the top
     const ctx = graph.getContext('2d');
-    const xSpacing = graphWidth / dataToDisplay.length;
     
     // draw borders
     ctx.moveTo(0, 0);
@@ -321,31 +320,20 @@ function drawGraph(extra) {
     ctx.lineTo(graphWidth, graph.height);
     ctx.stroke();
     
-    ctx.beginPath();
-    ctx.strokeStyle = 'black';
-    ctx.moveTo(0, graph.height / 2);
-    ctx.lineTo(graphWidth, graph.height / 2);
-    ctx.stroke();
-    
     // drawing the graph
-    // get highest X and Y values to ensure graph fits on screen
-    var highestX = -1;
-    var lowestX = 999999999999;
-    var lowestY = 999999999999;
+    graphHighestY = -1;
+    highestX = -1;
     for (var dataObj of dataToDisplay) {
-        if (dataObj.timeStamp > highestX) highestX = dataObj.timeStamp;
         if (dataObj.data > graphHighestY) graphHighestY = dataObj.data;
-        if (dataObj.timeStamp < lowestX) lowestX = dataObj.timeStamp;
-        if (dataObj.data < lowestY) lowestY = dataObj.data;
+        if (dataObj.timeStamp > highestX) highetX = dataObj.timeStamp;
     }
-    
+
     ctx.beginPath();
     ctx.strokeStyle = '#33cc33';
     for (var i = 0; i < dataToDisplay.length; i++) {
-        var timeStamp = dataToDisplay[i].timeStamp;
-        var data = dataToDisplay[i].data;
-        var x = xSpacing * i;
-        var y = getAdjustedY(graphHeight, data, graphHeightAdjusted, graphHighestY);
+        var dataObj = dataToDisplay[i];
+        var x = (graphWidth / dataToDisplay.length) * i;
+        var y = getAdjustedY(graphHeight, dataObj.data, graphHeightAdjusted, graphHighestY);
         if (i === 0) {
             ctx.moveTo(0, y);
         } else {
