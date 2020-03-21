@@ -1,5 +1,6 @@
 // item buttons creation and toggle logic
-const __filesDir = '/productinfo/'
+//const __filesDir = '/productinfo/'
+const __filesDir = "C:\\Users\\raidenw\\desktop\\bazaartracker\\productinfo\\"
 const __categoriesFileName = 'categories.json'
 
 const farmingBtn = document.getElementById('farmingBtn')
@@ -10,8 +11,7 @@ const odditiesBtn = document.getElementById('odditiesBtn')
 
 var categories;
 loadJSONFile(__filesDir + __categoriesFileName, function (response) {    
-categories = JSON.parse(response);
-    
+    categories = JSON.parse(response);
     for (var category in categories) {
         for (var i = 0; i < categories.length; i += 2) {
             productIds.push(categories[category][i].replace('\.product', '').replace('\+', ':'));
@@ -425,8 +425,8 @@ document.getElementById('graphContainer').addEventListener('mousemove', function
         if (x > graph.width / 2) {
             textX -= 200;
         }
-        ctx.fillText('Data: ' + d, textX, y);
-        
+        ctx.fillText('Data: ' + parseFloat(d).toFixed(3), textX, y);
+
         var timeElapsed = getTimeStampToTimeElapsed(ts);
         var str = '';
         if (timeElapsed.days !== 0) {
