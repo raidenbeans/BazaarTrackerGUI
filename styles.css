@@ -1,5 +1,5 @@
 /* anything that shouldnt be dragged */
-.category, .button, .categoryImage, .buttonImage, #datatypeDropdown, .datatypeDropdown-button, #loadingImg, .imageEnchanted, .timeButton {
+.category, .button, .categoryImage, .buttonImage, #datatypeDropdown, .datatypeDropdown-button, #loadingImg, .imageEnchanted, .timeButton, #timeRewindLeft, #timeRewindRight {
     user-drag: none; 
     user-select: none;
     -moz-user-select: none;
@@ -128,7 +128,7 @@ input {
     padding: 2px 4px;
 }
 
-.timeButton:last-child {
+.timeButton:nth-last-child(2) {
     border-right: 2px solid black;
 }
 
@@ -152,4 +152,15 @@ input {
     } to {
         transform: rotate(359deg);
     }
+}
+
+/* Rewind and speedup buttons */
+#timeRewindLeft, #timeRewindRight {
+    width: 16px;
+    height: 16px;
+}
+
+#timeRewindRight {
+    transform: rotate(180deg);
+    margin-left: 3px;
 }

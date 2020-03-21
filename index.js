@@ -1,6 +1,6 @@
 // item buttons creation and toggle logic
 //const __filesDir = '/productinfo/'
-const __filesDir = "C:\\Users\\raidenw\\desktop\\bazaartracker\\productinfo\\"
+const __filesDir = 'C:\\users\\raidenw\\desktop\\bazaartracker\\productinfo\\'
 const __categoriesFileName = 'categories.json'
 
 const farmingBtn = document.getElementById('farmingBtn')
@@ -462,7 +462,7 @@ function getTimeStampToTimeElapsed(timeStamp) {
 
 document.getElementById('graph').addEventListener('mouseout', function() { fixDPI(); drawGraph(); })
 
-// time button logic
+// time button + rewind/forward logic
 var timeButtonCheckboxes = new Array()
 var timeButtonAll = document.getElementById('timeButtonAllChbx')
 var timeButtonSixM = document.getElementById('timeButtonSixMChbx')
@@ -509,4 +509,31 @@ for (var timeButton of timeButtonCheckboxes) {
             this.checked = true;
         }
     })
+}
+
+var timeCount = 0;
+document.getElementById('timeRewindLeft').addEventListener("click", function() {
+    timeCount--;
+    updateTimePeriod();
+})
+
+document.getElementById('timeRewindRight').addEventListener("click", function() {
+    timeCount++;
+    updateTimePeriod();
+})
+
+function updateTimePeriod() {
+    if (timePeriod[0].days < 99999) {
+        var toPush0 = { days: timePeriod[0].days - (timeCount === 0 ? 0 : timePeriod[0].days / timeCount) };
+        var toPush1 = { days: timePeriod[0].days };
+
+        timePeriod = new Array();
+        timePeriod.push(toPush0);
+        timePeriod.push(toPush1);
+
+        console.log('0');
+        console.log(timePeriod[0]);
+        console.log('1');
+        console.log(timePeriod[1]);
+    }
 }
