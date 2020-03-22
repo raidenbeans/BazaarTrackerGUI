@@ -1,0 +1,52 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    text-align: left;
+    height: 60px;
+    padding: 10px 50px 0px;
+    background-color: #f7f7f7;
+}
+
+header img {
+    height: 43px;
+}
+
+header a {
+    text-decoration: none;
+    color: black;
+}
+
+/* left side */
+#products {
+    overflow-y: auto;
+    width: 50%;
+}
+
+.category {
+    text-align: left;
+    padding: 10px 32px;
+    font-size: 16px;
+    margin-left: 0;
+    cursor: pointer;
+    background-color: white;
+    border-top: 2px solid #4CAF50;
+    display: block;
+}
+
+.category p {
+    vertical-align: middle;
+    text-align: left;
+}
+
+.categoryImage {
+    position: left;
+    width: 60px;
+    height: 60px;
+}
+
+input {
+    display: none;
+}

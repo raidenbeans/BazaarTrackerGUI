@@ -19,6 +19,7 @@
     border: 2px solid #4CAF50;
     width: 10%;
     display: block;
+    transition-duration: 0.25s;
 }
 
 input {
@@ -29,7 +30,6 @@ input {
 }
 
 .category:hover, .button:hover, .timeButton:hover {
-    transition-duration: 0.25s;
     background-color: #dbdbdb;
 }
 
@@ -126,6 +126,7 @@ input {
     border-right: none;
     position: relative;
     padding: 2px 4px;
+    transition-duration: 0.25s;
 }
 
 .timeButton:nth-last-child(2) {

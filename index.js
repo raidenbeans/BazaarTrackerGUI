@@ -1,6 +1,6 @@
 // item buttons creation and toggle logic
 //const __filesDir = '/productinfo/'
-const __filesDir = 'C:\\users\\raidenw\\desktop\\bazaartracker\\productinfo\\'
+const __filesDir = 'c:\\users\\raidenw\\desktop\\bazaartracker\\productinfo\\'
 const __categoriesFileName = 'categories.json'
 
 const farmingBtn = document.getElementById('farmingBtn')
@@ -87,8 +87,9 @@ function createButtons(categoryName, category) {
     }
 }
 
+var xhr;
 function loadJSONFile(file, callback) {
-    var xhr = new XMLHttpRequest();
+    xhr = new XMLHttpRequest();
     xhr.overrideMimeType('application/json');
     xhr.open('GET', file, true);
     xhr.onreadystatechange = function() {
@@ -224,6 +225,7 @@ function updateCanvas() {
         propertyType = propertiesToDisplay[0];
     }
     
+    if (xhr !== undefined) xhr.abort();
     document.getElementById('loadingImg').style.display = 'block';
     loadJSONFile(__filesDir + selectedItemId.replace(':', '+') + '.product', function (responseText) {
         document.getElementById('loadingImg').style.display = 'none';
@@ -241,31 +243,39 @@ function updateCanvas() {
             
             switch (propertiesEnum[propertyType]) {
                 case propertiesEnum.HIGHEST_BUY_PRICE:
-                    dataToDisplay.push({timeStamp: property, data: obj.buySummary[0].pricePerUnit});
+                    if (obj.buySummary.length > 0) {
+                        dataToDisplay.push({timeStamp: property, data: obj.buySummary[0].pricePerUnit});
+                    }
                     break;
                 case propertiesEnum.AVERAGE_BUY_PRICE:
-                    var averageBuyPrice = 0;
-                    var i = 0;
-                    for (var buyData of obj.buySummary) {
-                        averageBuyPrice += buyData.pricePerUnit;
-                        i++;
+                    if (obj.buySummary.length > 0) {
+                        var averageBuyPrice = 0;
+                        var i = 0;
+                        for (var buyData of obj.buySummary) {
+                            averageBuyPrice += buyData.pricePerUnit;
+                            i++;
+                        }
+                        averageBuyPrice /= i;
+                        dataToDisplay.push({ timeStamp: property, data: averageBuyPrice });
                     }
-                    averageBuyPrice /= i;
-                    dataToDisplay.push({timeStamp: property, data: averageBuyPrice});
                     break;
                     
                 case propertiesEnum.LOWEST_SELL_PRICE:
-                    dataToDisplay.push({timeStamp: property, data: obj.sellSummary[0].pricePerUnit});
+                    if (obj.sellSummary.length > 0) {
+                        dataToDisplay.push({timeStamp: property, data: obj.sellSummary[0].pricePerUnit});
+                    }
                     break;
                 case propertiesEnum.AVERAGE_SELL_PRICE:
-                    var averageSellPrice = 0;
-                    var i = 0;
-                    for (var sellData of obj.sellSummary) {
-                        averageSellPrice += sellData.pricePerUnit;
-                        i++;
+                    if (obj.sellSummary.length > 0) {
+                        var averageSellPrice = 0;
+                        var i = 0;
+                        for (var sellData of obj.sellSummary) {
+                            averageSellPrice += sellData.pricePerUnit;
+                            i++;
+                        }
+                        averageSellPrice /= i;
+                        dataToDisplay.push({ timeStamp: property, data: averageSellPrice });
                     }
-                    averageSellPrice /= i;
-                    dataToDisplay.push({timeStamp: property, data: averageSellPrice});
                     break;
                 
                 case propertiesEnum.QUICK_BUY_PRICE:
@@ -304,16 +314,37 @@ function updateCanvas() {
     });
 }
 
-var graphHeightAdjusted = 0;
-var graphHeight = 0;
-var graphHighestY = -1;
+// zoo event: 2 days 14 hours. Spooky event: 5 days 4 hours. Christmas Event: 5 days 4 hours. New Year: 5 days 4 hours
+var events = {
+    "zoo": {
+        "milliseconds": 223200000
+    },
+    "halloween": {
+        "milliseconds": 446400000
+    },
+    "christmas": {
+        "milliseconds": 446400000
+    },
+    "newyear": {
+        "milliseconds": 446400000
+    }
+}
+
+var graphYStretch = 0;
+var graphXStretch = 0;
 function drawGraph(extra) {
     const graph = document.getElementById('graph');
     const graphWidth = graph.width;
-    graphHeight = graph.height;
-    graphHeightAdjusted = graph.height - 20; // - 20 so there is padding on the top
+    var graphHeight = graph.height;
+    var padding = 25;
     const ctx = graph.getContext('2d');
     
+    if (dataToDisplay.length < 1) {
+        ctx.fillText('No Data to Display. Try another property', graphWidth / 2 - 50, graphHeight / 2);
+        ctx.stroke();
+        return;
+    }
+
     // draw borders
     ctx.moveTo(0, 0);
     ctx.lineTo(0, graph.height);
@@ -321,19 +352,27 @@ function drawGraph(extra) {
     ctx.stroke();
     
     // drawing the graph
-    graphHighestY = -1;
-    highestX = -1;
+    var highestY = -1;
+    var lowestY = 9999999999;
+
+    var highestX = -1;
+    var lowestX = 999999999999999;
     for (var dataObj of dataToDisplay) {
-        if (dataObj.data > graphHighestY) graphHighestY = dataObj.data;
-        if (dataObj.timeStamp > highestX) highetX = dataObj.timeStamp;
+        if (dataObj.data > highestY) highestY = dataObj.data;
+        if (dataObj.data < lowestY) lowestY = dataObj.data;
+
+        if (dataObj.timeStamp > highestX) highestX = dataObj.timeStamp;
+        if (dataObj.timeStamp < lowestX) lowestX = dataObj.timeStamp;
     }
 
+    graphYStretch = (graphHeight - padding) / (highestY - lowestY);
+    graphXStretch = graphWidth / (highestX - lowestX);
     ctx.beginPath();
     ctx.strokeStyle = '#33cc33';
     for (var i = 0; i < dataToDisplay.length; i++) {
         var dataObj = dataToDisplay[i];
-        var x = (graphWidth / dataToDisplay.length) * i;
-        var y = getAdjustedY(graphHeight, dataObj.data, graphHeightAdjusted, graphHighestY);
+        var x = getAdjustedX(dataObj.timeStamp, graphXStretch, lowestX);
+        var y = getAdjustedY(dataObj.data, graphYStretch, graphHeight, lowestY, padding);
         if (i === 0) {
             ctx.moveTo(0, y);
         } else {
@@ -346,8 +385,12 @@ function drawGraph(extra) {
     if (extra !== undefined) extra(graph, ctx);
 }
 
-function getAdjustedY(height, y, heightAdjusted, highestY) {
-    return height - (y * heightAdjusted / highestY);
+function getAdjustedX(x, xStretch, lowestX) {
+    return (x - lowestX) * xStretch;
+}
+
+function getAdjustedY(y, yStretch, graphHeight, lowestY, padding) {
+    return ((graphHeight - (padding === undefined ? 0 : padding)) - (y - lowestY) * yStretch) + (padding === undefined ? 0 : padding / 2);
 }
 
 function updateSelectedButton(checked, btn) {
@@ -393,10 +436,20 @@ document.getElementById('graphContainer').addEventListener('mousemove', function
         var x = (event.clientX < graph.getBoundingClientRect.left) ? 0 : (event.clientX > graph.getBoundingClientRect.right) ? graph.getBoundingClientRect.right : event.clientX - graph.getBoundingClientRect().left;
         var finalX = x;
         
+        var lowestX = 999999999999999;
+        for (var data of dataToDisplay) {
+            if (data.timeStamp < lowestX) lowestX = data.timeStamp;
+        }
+
         var d = 0;
         var ts = 0;
-        var lowestDist1 = 999999;
+        var lowestY = 9999999;
+        var lowestDist1 = 9999999;
         for (var i = 0; i < dataToDisplay.length; i++) {
+            if (dataToDisplay[i].data < lowestY) {
+                lowestY = dataToDisplay[i].data;
+            }
+
             var dist = Math.abs(graph.width / dataToDisplay.length * i - x)
             if (lowestDist1 > dist) {
                 lowestDist1 = dist;
@@ -404,7 +457,7 @@ document.getElementById('graphContainer').addEventListener('mousemove', function
                 ts = dataToDisplay[i].timeStamp;
                 d = dataToDisplay[i].data;
                 
-                finalX = graph.width / dataToDisplay.length * i;
+                finalX = getAdjustedX(ts, graphXStretch, lowestX);
             }
         }
         
@@ -434,7 +487,7 @@ document.getElementById('graphContainer').addEventListener('mousemove', function
         // drawing circle that intersects line
         ctx.beginPath();
         ctx.lineWidth = 2;
-        ctx.arc(finalX, getAdjustedY(graphHeight, d, graphHeightAdjusted, graphHighestY), 6, 0, Math.PI * 2);
+        ctx.arc(finalX, getAdjustedY(d, graphYStretch, graph.height, lowestY, 25), 6, 0, Math.PI * 2);
         ctx.fillStyle = 'white';
         ctx.fill();
         ctx.stroke();
