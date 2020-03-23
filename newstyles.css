@@ -1,13 +1,30 @@
-body {
+:root {
+    --divider-left-space: 35%;
+    --gray: #dbdbdb;
+}
+
+/* Anything that shouldnt be able to be selected */
+img {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Misc */
+body { 
     margin: 0;
     padding: 0;
 }
 
 header {
+    width: var(--divider-left-space);
     text-align: left;
     height: 60px;
-    padding: 10px 50px 0px;
+    padding: 15px 0px 0px;
     background-color: #f7f7f7;
+    display: block;
 }
 
 header img {
@@ -17,22 +34,27 @@ header img {
 header a {
     text-decoration: none;
     color: black;
+    padding-left: 30px;
+}
+
+input {
+    display: none;
 }
 
 /* left side */
 #products {
     overflow-y: auto;
-    width: 50%;
+    width: var(--divider-left-space);
 }
 
 .category {
     text-align: left;
-    padding: 10px 32px;
+    padding: 7px 20px;
     font-size: 16px;
     margin-left: 0;
     cursor: pointer;
     background-color: white;
-    border-top: 2px solid #4CAF50;
+    border-top: 2px solid var(--gray);
     display: block;
 }
 
@@ -47,6 +69,19 @@ header a {
     height: 60px;
 }
 
-input {
-    display: none;
+/* Divider */
+#divider {
+    position: fixed;
+    left: var(--divider-left-space);
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background-color: var(--gray);
+}
+
+/* Left side */
+#right {
+    position: fixed;
+    left: var(--divider-left-space);
+    top: 0;
 }

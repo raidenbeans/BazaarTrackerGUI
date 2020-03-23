@@ -317,16 +317,20 @@ function updateCanvas() {
 // zoo event: 2 days 14 hours. Spooky event: 5 days 4 hours. Christmas Event: 5 days 4 hours. New Year: 5 days 4 hours
 var events = {
     "zoo": {
-        "milliseconds": 223200000
+        "milliseconds": 223200000,
+        "fillColor": "#c4a746"
     },
     "halloween": {
-        "milliseconds": 446400000
+        "milliseconds": 446400000,
+        "fillColor": "#ea6e13"
     },
     "christmas": {
-        "milliseconds": 446400000
+        "milliseconds": 446400000,
+        "fillColor": "#d42426"
     },
     "newyear": {
-        "milliseconds": 446400000
+        "milliseconds": 446400000,
+        "fillColor": "#dbe2eb"
     }
 }
 
@@ -345,16 +349,15 @@ function drawGraph(extra) {
         return;
     }
 
-    // draw borders
+    // drawing borders
     ctx.moveTo(0, 0);
     ctx.lineTo(0, graph.height);
     ctx.lineTo(graphWidth, graph.height);
     ctx.stroke();
-    
-    // drawing the graph
+
+    // getting important data for drawing
     var highestY = -1;
     var lowestY = 9999999999;
-
     var highestX = -1;
     var lowestX = 999999999999999;
     for (var dataObj of dataToDisplay) {
@@ -364,9 +367,38 @@ function drawGraph(extra) {
         if (dataObj.timeStamp > highestX) highestX = dataObj.timeStamp;
         if (dataObj.timeStamp < lowestX) lowestX = dataObj.timeStamp;
     }
-
     graphYStretch = (graphHeight - padding) / (highestY - lowestY);
     graphXStretch = graphWidth / (highestX - lowestX);
+
+    // drawing the events
+    for (var eventName in events) {
+        var event = events[eventName];
+        var offset = lowestX % event.milliseconds;
+        var val = lowestX - offset + event.milliseconds;
+
+        for (var val = lowestX - offset + event.milliseconds; val < highestX; val += event.milliseconds) {
+            console.log(val); // TODO. Not adding all events
+
+            var y = 0;
+            var lowestDist = 9999999;
+            for (var i = 0; i < dataToDisplay.length; i++) {
+                var dist = Math.abs(getAdjustedX(dataToDisplay[i].timeStamp, graphXStretch, lowestX) - getAdjustedX(val, graphXStretch, lowestX));
+                if (lowestDist > dist) {
+                    lowestDist = dist;
+                    y = dataToDisplay[i].data;
+                }
+            }
+
+            ctx.beginPath();
+
+            ctx.arc(getAdjustedX(val, graphXStretch, lowestX), getAdjustedY(y, graphYStretch, graphHeight, lowestY, padding), 6, 0, Math.PI * 2);
+            ctx.fillStyle = event.fillColor;
+            ctx.fill();
+            ctx.stroke();
+        }
+    }
+
+    // drawing the data
     ctx.beginPath();
     ctx.strokeStyle = '#33cc33';
     for (var i = 0; i < dataToDisplay.length; i++) {
@@ -383,6 +415,10 @@ function drawGraph(extra) {
     ctx.stroke();
     
     if (extra !== undefined) extra(graph, ctx);
+}
+
+function drawPoints() {
+    
 }
 
 function getAdjustedX(x, xStretch, lowestX) {
@@ -450,10 +486,9 @@ document.getElementById('graphContainer').addEventListener('mousemove', function
                 lowestY = dataToDisplay[i].data;
             }
 
-            var dist = Math.abs(graph.width / dataToDisplay.length * i - x)
+            var dist = Math.abs(getAdjustedX(dataToDisplay[i].timeStamp, graphXStretch, lowestX) - x);
             if (lowestDist1 > dist) {
                 lowestDist1 = dist;
-                Math.abs(graph.width / dataToDisplay.length * i - x);
                 ts = dataToDisplay[i].timeStamp;
                 d = dataToDisplay[i].data;
                 
