@@ -1,5 +1,6 @@
 :root {
     --divider-left-space: 35%;
+    --item-button-height: 1%;
     --gray: #dbdbdb;
 }
 
@@ -24,7 +25,6 @@ header {
     height: 60px;
     padding: 15px 0px 0px;
     background-color: #f7f7f7;
-    display: block;
 }
 
 header img {
@@ -41,7 +41,7 @@ input {
     display: none;
 }
 
-/* left side */
+/* category buttons */
 #products {
     overflow-y: auto;
     width: var(--divider-left-space);
@@ -49,24 +49,57 @@ input {
 
 .category {
     text-align: left;
-    padding: 7px 20px;
+    padding: 13px 20px;
     font-size: 16px;
     margin-left: 0;
     cursor: pointer;
     background-color: white;
     border-top: 2px solid var(--gray);
-    display: block;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .category p {
-    vertical-align: middle;
-    text-align: left;
+    padding-left: 20px;
 }
 
 .categoryImage {
     position: left;
-    width: 60px;
     height: 60px;
+    width: auto;
+}
+
+.dropdownContent {
+    display: none;
+    margin-left: 5%;
+}
+
+/* item buttons */
+.itemButton {
+    text-align: left;
+    padding: 13px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: white;
+    border-top: 2px solid var(--gray);
+    border-left: 2px solid var(--gray);
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.itemButton:first-child {
+    border-top: 0;
+}
+
+.itemButton p {
+    padding: 10px;
+}
+
+.itemImage {
+    height: 50px;
+    width: auto;
 }
 
 /* Divider */
@@ -79,9 +112,17 @@ input {
     background-color: var(--gray);
 }
 
-/* Left side */
+/* Canvas */
+#canvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* Right side */
 #right {
     position: fixed;
     left: var(--divider-left-space);
     top: 0;
+    width: 100%;
+    height: 100%;
 }

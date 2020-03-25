@@ -376,8 +376,10 @@ function drawGraph(extra) {
         var offset = lowestX % event.milliseconds;
         var val = lowestX - offset + event.milliseconds;
 
+        // TODO. Not adding all events
+        console.log(eventName);
         for (var val = lowestX - offset + event.milliseconds; val < highestX; val += event.milliseconds) {
-            console.log(val); // TODO. Not adding all events
+            console.log(getTimeStampToTimeElapsed(val));
 
             var y = 0;
             var lowestDist = 9999999;
@@ -415,10 +417,6 @@ function drawGraph(extra) {
     ctx.stroke();
     
     if (extra !== undefined) extra(graph, ctx);
-}
-
-function drawPoints() {
-    
 }
 
 function getAdjustedX(x, xStretch, lowestX) {

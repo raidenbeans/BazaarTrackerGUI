@@ -18,7 +18,7 @@ function createWindow() {
     });
     win.removeMenu();
     win.loadURL(url.format({
-        pathname: path.join(__dirname, 'index.html'),
+        pathname: path.join(__dirname, 'newindex.html'),
         protocol: 'file',
         slashes: true
     }));

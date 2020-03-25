@@ -11,7 +11,6 @@
     <header>
         <a href="/">
             <img src="assets/logo.png" />
-            Bazaar Graph
         </a>
     </header>
 
@@ -19,53 +18,56 @@
         <div>
             <label class="category" id="farmingBtn">
                 <input type="checkbox" class="categoryCheckbox">
-                <p>Farming</p>
                 <img class="categoryImage" src="assets/categories/farming.png" />
+                <p>Farming</p>
             </label>
-            <div class="dropdown-content"></div>
+            <div class="dropdownContent"></div>
         </div>
     
         <div>
             <label class="category" id="miningBtn">
                 <input type="checkbox" class="categoryCheckbox">
-                <p>Mining</p>
                 <img class="categoryImage" src="assets/categories/mining.png" />
+                <p>Mining</p>
             </label>
-            <div class="dropdown-content"></div>
+            <div class="dropdownContent"></div>
         </div>
     
         <div>
             <label class="category" id="combatBtn">
                 <input type="checkbox" class="categoryCheckbox">
-                <p>Combat</p>
                 <img class="categoryImage" src="assets/categories/combat.png" />
+                <p>Combat</p>
             </label>
-            <div class="dropdown-content"></div>
+            <div class="dropdownContent" style="display: none"></div>
         </div>
     
         <div>
             <label class="category" id="woodFishingBtn">
                 <input type="checkbox" class="categoryCheckbox">
-                <p>Wood and Fishing</p>
                 <img class="categoryImage" src="assets/categories/wood_fishing.png" />
+                <p>Wood and Fishing</p>
             </label>
-            <div class="dropdown-content"></div>
+            <div class="dropdownContent"></div>
         </div>
     
         <div>
             <label class="category" id="odditiesBtn">
                 <input type="checkbox" class="categoryCheckbox">
-                <p>Oddities</p>
                 <img class="categoryImage" src="assets/categories/oddities.png" />
+                <p>Oddities</p>
             </label>
-            <div class="dropdown-content"></div>
+            <div class="dropdownContent"></div>
         </div>
     </div>
 
     <div id="divider"></div>
 
     <div id="right">
-        abc
+        <canvas id="canvas">Your browser does not support HTML5 Canvas</canvas>
     </div>
+
+    <script src="graph.js"></script>
+    <script src="newindex.js"></script>
 </body>
 </html>
