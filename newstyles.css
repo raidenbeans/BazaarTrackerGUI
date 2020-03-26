@@ -4,6 +4,27 @@
     --gray: #dbdbdb;
 }
 
+/* TEST */
+#miningBtn img {
+    mix-blend-mode: color-dodge;
+    width: 100%;
+    display: block;
+}
+
+#random {
+    -webkit-mask-image: url(assets/categories/mining.png);
+    mask-image: url(assets/categories/mining.png);
+
+    -webkit-mask-size: 100% auto;
+    mask-size: 100% auto;
+
+    background-image: url(assets/enchanted_item_glint.gif);
+    background-size: 100% auto;
+    display: inline-block;
+}
+
+/* END TEST */
+
 /* Anything that shouldnt be able to be selected */
 img {
     user-select: none;
@@ -97,9 +118,15 @@ input {
     padding: 10px;
 }
 
+.itemEnchantedContainer {
+    height: 50px;
+}
+
 .itemImage {
     height: 50px;
     width: auto;
+    mix-blend-mode: multiply;
+    display: block;
 }
 
 /* Divider */
@@ -114,15 +141,17 @@ input {
 
 /* Canvas */
 #canvas {
-    width: 100%;
-    height: 100%;
+    width: 90%; /* Fixme. Width and height are not taking up entire screen */
+    height: 90%;
 }
 
 /* Right side */
 #right {
+    background-color: aliceblue;
     position: fixed;
+    text-align: center;
     left: var(--divider-left-space);
-    top: 0;
     width: 100%;
     height: 100%;
+    top: 0;
 }

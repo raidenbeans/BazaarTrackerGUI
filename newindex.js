@@ -21,7 +21,9 @@ loadJSONFile(filesDir + "categories.json", function(responseText) {
     for (var categoryName in json) {
         for (var i = 0; i < json[categoryName].length; i += 2) {
             var id = json[categoryName][i];
-            
+            var imgSrc = "assets/categories/buttons/" + id.replace(":", "+") + ".png";
+            var isEnchanted = id.includes("ENCHANTED");
+
             var btn = document.createElement("label");
             btn.setAttribute("class", "itemButton");
             document.getElementById(categoryName + "Btn").parentElement.childNodes.forEach(function (node) {
@@ -35,11 +37,26 @@ loadJSONFile(filesDir + "categories.json", function(responseText) {
             chbx.setAttribute("class", "itemCheckbox");
             btn.appendChild(chbx);
 
+            if (isEnchanted) {
+                var imgContainer = document.createElement("div");
+                imgContainer.setAttribute("class", "itemEnchantedContainer");
+                imgContainer.style.backgroundImage = "url(assets/enchanted_item_glint.gif)";
+                imgContainer.setAttribute("display", "inline-block");
+
+                // FIXME NOT SETTING MASK IMAGE OR SIZE
+                imgContainer.style.maskImage = "url(" + imgSrc + ")";
+                imgContainer.style.maskSize = "100% auto";
+                btn.appendChild(imgContainer);
+            }
+
             var img = document.createElement("img");
             img.setAttribute("class", "itemImage");
             img.setAttribute("id", id + "image");
-            img.setAttribute("src", "assets/categories/buttons/" + id.replace(":", "+") + ".png");
-            btn.appendChild(img);
+            img.setAttribute("src", imgSrc);
+            img.setAttribute("display", "block")
+            img.setAttribute("mix-blend-mode", "color-dodge")
+            img.setAttribute("alt", "");
+            if (isEnchanted) imgContainer.appendChild(img); else btn.appendChild(img);
 
             var p = document.createElement("p");
             p.textContent = json[categoryName][i + 1];
