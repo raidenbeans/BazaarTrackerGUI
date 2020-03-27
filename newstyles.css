@@ -4,27 +4,6 @@
     --gray: #dbdbdb;
 }
 
-/* TEST */
-#miningBtn img {
-    mix-blend-mode: color-dodge;
-    width: 100%;
-    display: block;
-}
-
-#random {
-    -webkit-mask-image: url(assets/categories/mining.png);
-    mask-image: url(assets/categories/mining.png);
-
-    -webkit-mask-size: 100% auto;
-    mask-size: 100% auto;
-
-    background-image: url(assets/enchanted_item_glint.gif);
-    background-size: 100% auto;
-    display: inline-block;
-}
-
-/* END TEST */
-
 /* Anything that shouldnt be able to be selected */
 img {
     user-select: none;

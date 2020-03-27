@@ -40,12 +40,16 @@ loadJSONFile(filesDir + "categories.json", function(responseText) {
             if (isEnchanted) {
                 var imgContainer = document.createElement("div");
                 imgContainer.setAttribute("class", "itemEnchantedContainer");
-                imgContainer.style.backgroundImage = "url(assets/enchanted_item_glint.gif)";
                 imgContainer.setAttribute("display", "inline-block");
 
-                // FIXME NOT SETTING MASK IMAGE OR SIZE
+                imgContainer.style.backgroundImage = "url(assets/enchanted_item_glint.gif)";
+//                imgContainer.style.opacity = "20%"; // TODO OPACITY
+
                 imgContainer.style.maskImage = "url(" + imgSrc + ")";
                 imgContainer.style.maskSize = "100% auto";
+
+                imgContainer.style.webkitMaskImage = "url(" + imgSrc + ")";
+                imgContainer.style.webkitMaskSize = "100% auto";
                 btn.appendChild(imgContainer);
             }
 
@@ -54,9 +58,14 @@ loadJSONFile(filesDir + "categories.json", function(responseText) {
             img.setAttribute("id", id + "image");
             img.setAttribute("src", imgSrc);
             img.setAttribute("display", "block")
-            img.setAttribute("mix-blend-mode", "color-dodge")
             img.setAttribute("alt", "");
-            if (isEnchanted) imgContainer.appendChild(img); else btn.appendChild(img);
+            if (isEnchanted) {
+                img.style.mixBlendMode = "color-dodge";
+                img.style.opacity = "100%";
+                imgContainer.appendChild(img);
+            } else {
+                btn.appendChild(img);
+            }
 
             var p = document.createElement("p");
             p.textContent = json[categoryName][i + 1];
