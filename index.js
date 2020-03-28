@@ -217,7 +217,7 @@ timePeriod.push({ days: -1 });
 var dataToDisplay = new Array()
 function updateCanvas() {
     var propertyType;
-    if (propertiesToDisplay.length === 0) {        
+    if (propertiesToDisplay.length === 0) {
         for (var property in propertiesEnum) {
             propertyType = property;
         }
@@ -227,91 +227,7 @@ function updateCanvas() {
     
     if (xhr !== undefined) xhr.abort();
     document.getElementById('loadingImg').style.display = 'block';
-    loadJSONFile(__filesDir + selectedItemId.replace(':', '+') + '.product', function (responseText) {
-        document.getElementById('loadingImg').style.display = 'none';
-        var json = JSON.parse(responseText + "}}");
-        dataToDisplay = new Array();
-        
-        var j = 0;
-        for (var property in json.productArray) {
-            // if out of the time period, continue to next element
-            var timeElapsed = getTimeStampToTimeElapsed(property)
-            if (!(timeElapsed.days < timePeriod[0].days && timeElapsed.days > timePeriod[1].days)) continue;
-            
-            j++;
-            var obj = json.productArray[property];
-            
-            switch (propertiesEnum[propertyType]) {
-                case propertiesEnum.HIGHEST_BUY_PRICE:
-                    if (obj.buySummary.length > 0) {
-                        dataToDisplay.push({timeStamp: property, data: obj.buySummary[0].pricePerUnit});
-                    }
-                    break;
-                case propertiesEnum.AVERAGE_BUY_PRICE:
-                    if (obj.buySummary.length > 0) {
-                        var averageBuyPrice = 0;
-                        var i = 0;
-                        for (var buyData of obj.buySummary) {
-                            averageBuyPrice += buyData.pricePerUnit;
-                            i++;
-                        }
-                        averageBuyPrice /= i;
-                        dataToDisplay.push({ timeStamp: property, data: averageBuyPrice });
-                    }
-                    break;
-                    
-                case propertiesEnum.LOWEST_SELL_PRICE:
-                    if (obj.sellSummary.length > 0) {
-                        dataToDisplay.push({timeStamp: property, data: obj.sellSummary[0].pricePerUnit});
-                    }
-                    break;
-                case propertiesEnum.AVERAGE_SELL_PRICE:
-                    if (obj.sellSummary.length > 0) {
-                        var averageSellPrice = 0;
-                        var i = 0;
-                        for (var sellData of obj.sellSummary) {
-                            averageSellPrice += sellData.pricePerUnit;
-                            i++;
-                        }
-                        averageSellPrice /= i;
-                        dataToDisplay.push({ timeStamp: property, data: averageSellPrice });
-                    }
-                    break;
-                
-                case propertiesEnum.QUICK_BUY_PRICE:
-                    dataToDisplay.push({timeStamp: property, data: obj.quickBuyPrice});
-                    break;
-                case propertiesEnum.QUICK_BUY_VOLUME:
-                    dataToDisplay.push({timeStamp: property, data: obj.quickBuyVolume});
-                    break;
-                case propertiesEnum.QUICK_BUY_MOVING_WEEK:
-                    dataToDisplay.push({timeStamp: property, data: obj.quickBuyMovingWeek});
-                    break;
-                case propertiesEnum.QUICK_BUY_ORDERS:
-                    dataToDisplay.push({timeStamp: property, data: obj.quickBuyOrders});
-                    break;
-                
-                case propertiesEnum.QUICK_SELL_PRICE:
-                    dataToDisplay.push({timeStamp: property, data: obj.quickSellPrice});
-                    break;
-                case propertiesEnum.QUICK_SELL_VOLUME:
-                    dataToDisplay.push({timeStamp: property, data: obj.quickSellVolume});
-                    break;
-                case propertiesEnum.QUICK_SELL_MOVING_WEEK:
-                    dataToDisplay.push({timeStamp: property, data: obj.quickSellMovingWeek});
-                    break;
-                case propertiesEnum.QUICK_SELL_ORDERS:
-                    dataToDisplay.push({timeStamp: property, data: obj.quickSellOrders});
-                    break;
-            }
-        }
-        dataToDisplay.sort(function(a, b) {
-            return a.timeStamp - b.timeStamp;
-        });
-        
-        fixDPI();
-        drawGraph();
-    });
+    
 }
 
 // zoo event: 2 days 14 hours. Spooky event: 5 days 4 hours. Christmas Event: 5 days 4 hours. New Year: 5 days 4 hours

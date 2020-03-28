@@ -1,7 +1,9 @@
 class Graph {
+
     constructor(id, dataPointsUnadjusted) {
         this._elementId = id;
         this._data = dataPointsUnadjusted;
+        this._jsonData = "";
 
         this.points = new Array();
         if (document.getElementById(id) === null) {
@@ -10,6 +12,7 @@ class Graph {
         } else {
             this.canvas = document.getElementById(id);
         }
+        this.fixDPI();
         this.ctx = this.canvas.getContext("2d");
         this.pointsCached = false;
 
@@ -23,6 +26,9 @@ class Graph {
         this.graphYStretch = 0;
         this.lowestX = 0;
         this.lowestY = 0;
+
+        this._lineWidth = 1;
+        this._lineColor = "black";
     }
 
     get paddingLeft() {
@@ -48,12 +54,36 @@ class Graph {
     }
 
     get data() {
-        return this._data
+        return this._data;
     }
 
     set data(x) {
         this._data = x;
         this.pointsCached = false;
+    }
+
+    get jsonData() {
+        return this._jsonData;
+    }
+
+    set jsonData(x) {
+        this._jsonData = x;
+    }
+
+    get lineWidth() {
+        return this._lineWidth;
+    }
+
+    set lineWidth(x) {
+        this._lineWidth = x;
+    }
+
+    get lineColor() {
+        return this._lineColor;
+    }
+
+    set lineColor(x) {
+        this._lineColor = x;
     }
 
     drawAxes() {
@@ -67,11 +97,11 @@ class Graph {
     draw() {
         this.fixDPI();
 
-        if (this._data.length < 1) {
+        if (this._data === undefined || this._data === null || this._data.length < 1) {
             this.ctx.beginPath();
             this.ctx.fillText('No Data to Display. Try another property', (this.canvas.width + this._paddingLeft) / 2 - 50, (this.canvas.height + this._paddingTop) / 2);
             this.ctx.stroke();
-            this.pointsCached = false;
+            this.pointsCached = false; 
             return;
         }
 
@@ -79,6 +109,8 @@ class Graph {
             this.drawAxes();
 
             this.ctx.beginPath();
+            this.ctx.lineWidth = this._lineWidth;
+            this.ctx.strokeStyle = this._lineColor;
             for (var i = 0; i < this.points.length; i++) {
                 var point = this.points[i];
                 if (i === 0) {
@@ -89,6 +121,8 @@ class Graph {
             }
             this.ctx.stroke();
         } else {
+            this.points.length = 0;
+
             var highestY = -1;
             this.lowestY = 9999999999;
             var highestX = -1;
@@ -103,8 +137,6 @@ class Graph {
             this.xStretch = this.adjustedWidth / (highestX - this.lowestX);
             this.yStretch = this.adjustedHeight / (highestY - this.lowestY);
 
-            console.log();
-
             for (var d of this.data) {
                 this.points.push({ x: this.getAdjustedX(d.x), y: this.getAdjustedY(d.y) })
             }
@@ -117,16 +149,8 @@ class Graph {
     fixDPI() {
         var dpi = window.devicePixelRatio;
         
-        let style = {
-            height() {
-                return +getComputedStyle(canvas).getPropertyValue('height').slice(0, -2);
-            },
-            width() {
-                return +getComputedStyle(canvas).getPropertyValue('width').slice(0, -2);
-            }
-        }
-        canvas.setAttribute('width', style.width() * dpi);
-        canvas.setAttribute('height', style.height() * dpi);
+        this.canvas.width = +getComputedStyle(this.canvas).getPropertyValue('width').slice(0, -2) * dpi;
+        this.canvas.height = +getComputedStyle(this.canvas).getPropertyValue('height').slice(0, -2) * dpi;
     }
 
     getAdjustedX(x) {
