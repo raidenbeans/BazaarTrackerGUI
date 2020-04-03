@@ -1,5 +1,3 @@
-Cache transformed points to improve performance. Rather than recalculating position of all points each time the specific line moves, cache points and ONLY DRAW the cached points
+Improve performance
 
 Different colors for each property + support for viewing multiple properties
-
-Check if on the server or if running w/ electron. If running with electron, download all the product info + live updates on program start.

@@ -16,12 +16,13 @@ img {
 
 /* Misc */
 body {
+    overflow-y: scroll;
     margin: 0;
     padding: 0;
 }
 
 header {
-    width: var(--divider-left-space);
+    width: 100%;
     text-align: left;
     position: fixed;
     height: 60px;
@@ -47,6 +48,7 @@ input {
 
 /* category buttons */
 #products {
+    transition-duration: 0.5s;
     width: var(--divider-left-space);
     position: absolute;
     top: 75px;
@@ -121,25 +123,19 @@ input {
 #divider {
     position: fixed;
     left: var(--divider-left-space);
-    top: 0;
+    top: 75px;
     width: 2px;
     height: 100%;
     background-color: var(--gray);
+    transition-duration: 0.5s;
 }
 
 /* Canvas */
 #canvas {
     margin: 20px;
-    width: 100%;
+    margin-top: 0;
+    width: 90%;
     height: 60%;
-}
-
-#canvasXLabel {
-    display: none;
-}
-
-#canvasYLabel {
-    transform: rotate(-90deg);
 }
 
 #canvasHeader {
@@ -148,17 +144,49 @@ input {
     border-bottom: 2px solid var(--gray);
     padding: 7.5px;
     text-align: left;
+    display: block;
+}
+
+#canvasData {
+    margin-top: -5px;
+    position: absolute;
 }
 
 /* Right side */
 #right {
     position: fixed;
+    margin-top: 75px;
     float: right;
     text-align: center;
     left: var(--divider-left-space);
     width: var(--right-side-width);
     height: 100%;
     top: 0;
+    display: block;
+    transition-duration: 0.5s;
+}
+
+/* Sliding Right Arrow */
+#rightArrow {
+    top: 110px;
+    position: fixed;
+    width: 25px;
+    height: 100%;
+    display: none;
+    z-index: 1;
+}
+
+#rightArrow div {
+    transition-duration: 0.5s;
+    position: relative;
+    left: -15px;
+    width: 25px;
+    height: 25px;
+    top: 10px;
+    border: 10px solid;
+    border-color: black transparent transparent black;
+    transform: rotate(135deg);
+    cursor: pointer;
 }
 
 /* Loading */

@@ -35,12 +35,6 @@ loadJSONFile(filesDir + "categories.json", function(responseText) {
                 }
             });
 
-            var chbx = document.createElement("input");
-            chbx.setAttribute("type", "checkbox");
-            chbx.setAttribute("class", "itemCheckbox");
-            btn.appendChild(chbx);
-            itemButtonCheckboxes.push(chbx);
-
             if (isEnchanted) {
                 var imgContainer = document.createElement("div");
                 imgContainer.setAttribute("class", "itemEnchantedContainer");
@@ -67,32 +61,80 @@ loadJSONFile(filesDir + "categories.json", function(responseText) {
             p.innerText = json[categoryName][i + 1];
             btn.appendChild(p);
 
-            chbx.addEventListener("change", function() {
-                if (this.checked) {
-                    for (var checkbox of itemButtonCheckboxes) {
-                        if (this !== checkbox) {
-                            checkbox.checked = false;
-                        }
-                    }
-                }
+            btn.addEventListener("click", function () {
+                selectedItemId = this.id.replace("Btn", "");
 
-                selectedItemId = this.parentElement.id.replace("Btn", "");
-                this.parentElement = this.checked ? selectedColor : "white";
+                document.getElementById("canvasItemName").innerText = this.getAttribute("itemName");
 
-                document.getElementById("canvasItemName").innerText = this.parentElement.getAttribute("itemName");
-                document.getElementById("canvasXLabel").style.display = this.checked ? "block" : "none";
-                document.getElementById("canvasYLabel").style.display = this.checked ? "block" : "none";
-                document.getElementById("canvasYLabel").innerText = properties.length > 1 ? "Data" : properties[0];
+                if (this.parentElement.parentElement.nextElementSibling != null) this.parentElement.parentElement.nextElementSibling.style.borderTop = "0";
+                products.clicked = false;
+                document.getElementById("products").style.marginLeft = "-70%";
+                document.getElementById("divider").style.left = "-70%";
+                document.getElementById("rightArrow").style.display = "inline-block";
+                var right = document.getElementById("right");
+                right.style.width = "80%";
+                right.style.left = "0";
+                right.style.margin = "75px 120px";
 
-                if (this.checked) {
-                    updateCanvas(); 
-                    document.getElementById("canvas").style.display = "block";
-                } else {
-                    document.getElementById("canvas").style.display = "none";
-                }
+                updateCanvas();
+                document.getElementById("canvas").style.display = "block";
             });
         }
     }
+})
+
+/* Add hover event to right arrow */
+document.getElementById("rightArrow").addEventListener("mouseenter", function() {
+    this.style.width = "70px";
+    products.style.marginLeft = (70 - products.offsetWidth) + "px";
+    divider.style.left = "69px";
+
+    var arrow = document.getElementById("arrow");
+    arrow.style.left = "120%";
+    arrow.style.transform = "scaleX(-1) rotate(135deg)";
+
+    for (var chbx of categoryCheckboxes) {
+        chbx.checked = false;
+        for (var e of this.parentElement.parentElement.getElementsByClassName("dropdownContent")) {
+            e.style.display = this.checked ? "block" : "none";
+        }
+    }
+
+    for (var child of document.getElementById("products").getElementsByTagName("label")) {
+        child.style.paddingRight = "0";
+        child.style.flexDirection = "row-reverse";
+        child.style.justifyItems = "flex-end";
+    }
+})
+
+document.getElementById("rightArrow").addEventListener("mouseleave", function() {
+    this.style.width = "25px";
+    if (!products.clicked) {
+        products.style.marginLeft = "-70%";
+        divider.style.left = "-70%"
+    }
+
+    var arrow = document.getElementById("arrow");
+    arrow.style.left = "-15px";
+    arrow.style.transform = "scaleX(1) rotate(135deg)";
+
+    for (var child of document.getElementById("products").getElementsByTagName("label")) {
+        child.style.paddingRight = "20px";
+        child.style.flexDirection = "row";
+        child.style.justifyItems = "flex-start";
+    }
+})
+
+document.getElementById("rightArrow").addEventListener("click", function() {
+    this.style.display = "none";
+    products.style.marginLeft = "0px";
+    products.clicked = true;
+    document.getElementById("divider").style.left = "var(--divider-left-space)";
+    document.getElementById("rightArrow").style.display = "none";
+    var right = document.getElementById("right");
+    right.style.width = "var(--right-side-width)";
+    right.style.left = "var(--divider-left-space)"
+    right.style.margin = "75px 0 0 0";
 })
 
 /* Register category buttons click functions */
@@ -100,17 +142,9 @@ var categoryCheckboxes = document.getElementsByClassName("categoryCheckbox");
 for (var chbx of categoryCheckboxes) {
     chbx.addEventListener("change", function() {
         this.parentElement.backgroundColor = this.checked ? selectedColor : "white";
-        this.parentElement.parentElement.nextElementSibling.style.borderTop = this.checked ? "2px solid #dbdbdb" : "0";
+        if (this.parentElement.parentElement.nextElementSibling !== null) this.parentElement.parentElement.nextElementSibling.style.borderTop = this.checked ? "2px solid #dbdbdb" : "0";
         for (var e of this.parentElement.parentElement.getElementsByClassName("dropdownContent")) {
             e.style.display = this.checked ? "block" : "none";
-        }
-
-        if (this.checked) {
-            for (var i = 0; i < categoryCheckboxes.length; i++) {
-                if (categoryCheckboxes[i] !== this) {
-                    categoryCheckboxes[i].parentElement.backgroundColor = this.checked ? selectedColor : "white";
-                }
-            }
         }
     });
 }
@@ -140,15 +174,17 @@ Object.freeze(propertyTypes);
 var properties = new Array();
 properties.push(propertyTypes.LOWEST_SELL_PRICE);
 var graph = new Graph("canvas");
+graph.paddingVertical = 40;
 graph.lineWidth = 1;
-graph.lineColor = "green";
+graph.strokeColor = "green";
+graph.lineColor = "#737373";
 var prevSelectedItemId = null;
 function updateCanvas() {
     document.getElementById("loading").style.display = "block";
     if (prevSelectedItemId !== selectedItemId) {
         loadJSONFile(filesDir + selectedItemId.replace(":", "+") + ".product", function (responseText) {
             document.getElementById("loading").style.display = "none";
-            graph.jsonData = JSON.parse(responseText + "}}")
+            graph.jsonData = JSON.parse(responseText + "}}");
             drawGraph();
         });
     } else {
@@ -257,5 +293,6 @@ function getTimeStampToTimeElapsed(timeStamp) {
 }
 
 window.addEventListener("resize", function() {
+    graph.pointsCached = false;
     graph.draw();
 })
