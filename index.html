@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Bazaar Graph</title>
-    <link rel="stylesheet" href="newstyles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
@@ -67,7 +67,43 @@
     <div id="right">
         <div id="canvasHeader">
             <p id="canvasItemName"></p>
-            <p id="canvasData"></p>
+            <img id="canvasItemImage" alt="" />
+            <div class="itemEnchantedContainer" id="canvasItemImageEnchanted"></div>
+            <div id="timeButtonsContainer">
+                <label class="timeButton" style="background-color: #dbdbdb">
+                    <input type="checkbox" id="timeButtonAllChbx">
+                    YTD
+                </label>
+                
+                <label class="timeButton">
+                    <input type="checkbox" id="timeButtonSixMChbx">
+                    6M
+                </label>
+                
+                <label class="timeButton">
+                    <input type="checkbox" id="timeButtonOneMChbx">
+                    1M
+                </label>
+                
+                <label class="timeButton">
+                    <input type="checkbox" id="timeButtonOneWChbx">
+                    1W
+                </label>
+                
+                <label class="timeButton">
+                    <input type="checkbox" id="timeButtonThreeDChbx">
+                    3D
+                </label>
+                
+                <label class="timeButton">
+                    <input type="checkbox" id="timeButtonOneDChbx">
+                    1D
+                </label>
+            </div>
+            <div id="propertySelector"><p></p></div>
+            <div id="canvasHeaderDivider"></div>
+            <p id="canvasXData"></p>
+            <p id="canvasYData"></p>
         </div>
 
         <div id="loading"><div></div><div></div><div></div></div>
@@ -75,6 +111,6 @@
     </div>
 
     <script src="graph.js"></script>
-    <script src="newindex.js"></script>
+    <script src="index.js"></script>
 </body>
 </html>

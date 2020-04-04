@@ -1,6 +1,5 @@
 /* anything that shouldnt be dragged */
 .category, .button, .categoryImage, .buttonImage, #datatypeDropdown, .datatypeDropdown-button, #loadingImg, .imageEnchanted, .timeButton, #timeRewindLeft, #timeRewindRight {
-    user-drag: none; 
     user-select: none;
     -moz-user-select: none;
     -webkit-user-drag: none;

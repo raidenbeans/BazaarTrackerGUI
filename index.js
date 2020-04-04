@@ -15,6 +15,7 @@ function loadJSONFile(file, callback) {
 }
 
 /* Add item buttons */
+//const filesDir = "productinfo/"
 const filesDir = "C:\\Users\\RaidenW\\Desktop\\BazaarTracker\\productinfo\\"
 var itemButtonCheckboxes = new Array();
 loadJSONFile(filesDir + "categories.json", function(responseText) {
@@ -65,6 +66,25 @@ loadJSONFile(filesDir + "categories.json", function(responseText) {
                 selectedItemId = this.id.replace("Btn", "");
 
                 document.getElementById("canvasItemName").innerText = this.getAttribute("itemName");
+                var isEnchanted = this.id.includes("ENCHANTED");
+                var imgSrc = "assets/categories/buttons/" + this.id.replace("Btn", "").replace(":", "+") + ".png";
+                if (isEnchanted) {
+                    var imgContainer = document.getElementById("canvasItemImageEnchanted");
+                    imgContainer.style.maskImage = "url(" + imgSrc + ")";
+                    imgContainer.style.webkitMaskImage = "url(" + imgSrc + ")";
+                    document.getElementById("canvasHeader").appendChild(imgContainer);
+                }
+    
+                var img = document.getElementById("canvasItemImage");
+                img.setAttribute("class", "itemImage");
+                img.setAttribute("src", imgSrc);
+                if (isEnchanted) {
+                    img.style.mixBlendMode = "screen";
+                    img.style.opacity = "100%";
+                    imgContainer.appendChild(img);
+                } else {
+                    document.getElementById("canvasHeader").appendChild(img);
+                }
 
                 if (this.parentElement.parentElement.nextElementSibling != null) this.parentElement.parentElement.nextElementSibling.style.borderTop = "0";
                 products.clicked = false;
@@ -186,6 +206,13 @@ graph.paddingVertical = 40;
 graph.lineWidth = 1;
 graph.strokeColor = "green";
 graph.lineColor = "#737373";
+graph.translateX = function(x) {
+    return translateX(x);
+}
+graph.translateY = function(y) {
+    var split = y.toString().split("\.");
+    return split.length > 1 && split[1].length > 3 ? parseFloat(y).toFixed(3) : y;
+}
 var prevSelectedItemId = null;
 function updateCanvas() {
     document.getElementById("loading").style.display = "block";
@@ -198,6 +225,23 @@ function updateCanvas() {
     } else {
         drawGraph();
     }
+}
+
+function translateX(x) {
+    var elapsedSeconds = (Date.now() - x) / 1000; // time in s
+  
+    var weeks = Math.floor(elapsedSeconds / 604800);
+    var days = Math.floor((elapsedSeconds - (weeks * 604800)) / 86400);
+    var hours = Math.floor((elapsedSeconds - (weeks * 604800) - (days * 86400)) / 3600);
+    var minutes = Math.floor((elapsedSeconds - (weeks * 604800) - (days * 86400) - (hours * 3600)) / 60);
+//    var secs = Math.floor((elapsedSeconds - (weeks * 604800) - (days * 86400) - (hours * 3600) - (minutes * 60)));
+    
+    var str = weeks === 0 ? "" : weeks + " week" + (weeks > 1 ? "s " : " ");
+    str += days === 0 ? "" : days + " day" + (days > 1 ? "s " : " ");
+    str += hours === 0 ? "" : hours + " hour" + (hours > 1 ? "s " : " ");
+    str += minutes + " minute" + (minutes === 0 || minutes > 1 ? "s" : "");
+    
+    return str + " ago";
 }
 
 function drawGraph() {

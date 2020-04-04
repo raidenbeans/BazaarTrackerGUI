@@ -141,17 +141,57 @@ input {
 }
 
 #canvasHeader {
-    height: 60px;
+    height: 120px;
     width: 100%;
     border-bottom: 2px solid var(--gray);
     padding: 7.5px;
-    text-align: left;
-    display: block;
+    display: flex;
+    overflow: hidden;
 }
 
-#canvasData {
-    margin-top: -5px;
+#timeButtonsContainer {
+    margin: 0 auto;
+    margin-top: 15px;
+    justify-self: center;
+    order: 2
+}
+
+#canvasItemImageEnchanted, #canvasItemImage {
+    order: 0;
+}
+
+#canvasItemName {
+    margin-left: 15px;
+    order: 1
+}
+
+#canvasHeaderDivider {
+    order: 3;
+    margin-top: 55px;
+    background-color: var(--gray);
     position: absolute;
+    width: 100%;
+    height: 2px;
+}
+
+#canvasXData {
+    display: inline-block;
+    align-self: flex-end;
+    position: absolute;
+    margin: -10px 0 0 40%;
+    width: 20vw;
+    order: 3;
+}
+
+#canvasYData {
+    display: inline-block;
+    margin-top: 8px;
+    position: absolute;
+    align-self: flex-end;
+}
+
+#propertySelector {
+    
 }
 
 /* Right side */
@@ -195,7 +235,7 @@ input {
 #loading {
     display: none;
     position: fixed;
-    left: 64%;
+    left: 50%;
     top: 20%;
     width: 80px;
     height: 80px;
@@ -242,4 +282,17 @@ input {
         height: 64px;
         background-color: #cef;
     }
+}
+
+/* Time buttons */
+.timeButton {
+    border: 2px solid black;
+    border-right: none;
+    position: relative;
+    padding: 2px 4px;
+    transition-duration: 0.25s;
+}
+
+.timeButton:last-child {
+    border-right: 2px solid black;
 }

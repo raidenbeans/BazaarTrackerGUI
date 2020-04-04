@@ -34,7 +34,6 @@ class Graph {
         var thisGraph = this; // TODO optimize
         this.canvas.addEventListener("mousemove", function(event) {
             if (thisGraph.points !== undefined && thisGraph.points.length > 0) {
-                var canvasData = document.getElementById("canvasData");
                 var x = event.clientX < thisGraph.canvas.getBoundingClientRect().left ? 0 : event.clientX > thisGraph.canvas.getBoundingClientRect().right ? thisGraph.canvas.getBoundingClientRect().right : event.clientX - thisGraph.canvas.getBoundingClientRect().left;
 
                 var data = { x: 0, y: 0, adjustedX: 0 };
@@ -50,10 +49,13 @@ class Graph {
                         data.y = dataObj.y;
                     }
                 }
-                canvasData.style.display = "block";
-                var split = data.y.toString().split("\.");
-                canvasData.innerText = split.length > 1 && split[1].length > 3 ? parseFloat(data.y).toFixed(3) : data.y;
-                canvasData.style.left = data.adjustedX + "px";
+                var canvasYData = document.getElementById("canvasYData");
+                canvasYData.style.display = "block";
+                canvasYData.innerText = thisGraph.translateY(data.y);
+                canvasYData.style.left = data.adjustedX + "px";
+                var canvasXData = document.getElementById("canvasXData");
+                canvasXData.style.display = "block";
+                canvasXData.innerText = thisGraph.translateX(data.x);
 
                 thisGraph.draw();
                 thisGraph.ctx.beginPath();
@@ -69,6 +71,18 @@ class Graph {
                 thisGraph.ctx.stroke();
             }
         });
+    }
+
+/*    filterData(data) {
+        return data; TODO
+    }*/
+
+    translateX(x) {
+        return x;
+    }
+
+    translateY(y) {
+        return y;
     }
 
     get lineColor() {
