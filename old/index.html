@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Bazaar Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>    
+    <div id="graphContainer">
+        <p id="graphHeading"></p>
+        <p id="graphYLabel">Data</p>        
+        <canvas id="graph">Your browser does not supported HTML5 canvas</canvas>
+        <img src="assets/loading.png" id="loadingImg" />
+        <p id="graphXLabel">Time</p>
+    </div>
+    
+    <div id="datatypeDropdown">
+        Property Type
+        <div id="datatypeDropdown-content"></div>
+    </div>
+    
+    <div id="timeButtonsContainer">
+        <img src="assets/rewind.png" id="timeRewindLeft" />
+
+        <label class="timeButton" style="background-color: #dbdbdb">
+            <input type="checkbox" id="timeButtonAllChbx">
+            YTD
+        </label>
+        
+        <label class="timeButton">
+            <input type="checkbox" id="timeButtonSixMChbx">
+            6M
+        </label>
+        
+        <label class="timeButton">
+            <input type="checkbox" id="timeButtonOneMChbx">
+            1M
+        </label>
+        
+        <label class="timeButton">
+            <input type="checkbox" id="timeButtonOneWChbx">
+            1W
+        </label>
+        
+        <label class="timeButton">
+            <input type="checkbox" id="timeButtonThreeDChbx">
+            3D
+        </label>
+        
+        <label class="timeButton">
+            <input type="checkbox" id="timeButtonOneDChbx">
+            1D
+        </label>
+
+        <img src="assets/rewind.png" id="timeRewindRight" />
+    </div>
+
+    <div>
+        <label class="category" id="farmingBtn">
+            <input type="checkbox" class="categoryCheckbox">
+            Farming
+            <p class="blankLine"></p>
+            <img class="categoryImage" src="assets/categories/farming.png" />
+        </label>
+        <div class="dropdown-content"></div>
+    </div>
+    
+    <div>
+        <label class="category" id="miningBtn">
+            <input type="checkbox" class="categoryCheckbox">
+            Mining
+            <p class="blankLine"></p>
+            <img class="categoryImage" src="assets/categories/mining.png" />
+        </label>
+        <div class="dropdown-content"></div>
+    </div>
+    
+    <div>
+        <label class="category" id="combatBtn">
+            <input type="checkbox" class="categoryCheckbox">
+            Combat
+            <p class="blankLine"></p>
+            <img class="categoryImage" src="assets/categories/combat.png" />
+        </label>
+        <div class="dropdown-content"></div>
+    </div>
+    
+    <div>
+        <label class="category" id="woodFishingBtn">
+            <input type="checkbox" class="categoryCheckbox">
+            Wood and Fishing
+            <p class="blankLine"></p>
+            <img class="categoryImage" src="assets/categories/wood_fishing.png" />
+        </label>
+        <div class="dropdown-content"></div>
+    </div>
+    
+    <div>
+        <label class="category" id="odditiesBtn">
+            <input type="checkbox" class="categoryCheckbox">
+            Oddities
+            <p class="blankLine"></p>
+            <img class="categoryImage" src="assets/categories/oddities.png" />
+        </label>
+        <div class="dropdown-content"></div>
+    </div>
+    
+    <div id="divider"></div>
+    
+    <script src="index.js"></script>
+</body>
+</html>

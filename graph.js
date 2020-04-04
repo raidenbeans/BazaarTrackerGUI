@@ -151,6 +151,7 @@ class Graph {
     }
 
     drawAxes() {
+        // draw axes
         this.ctx.beginPath();
         this.ctx.moveTo(0, 0);
         this.ctx.lineTo(0, this.canvas.height);
@@ -165,7 +166,7 @@ class Graph {
             this.ctx.beginPath();
             this.ctx.fillText('No Data to Display. Try another property', (this.canvas.width + this._paddingHorizantal) / 2 - 50, (this.canvas.height + this._paddingVertical) / 2);
             this.ctx.stroke();
-            this._pointsCached = false; 
+            this._pointsCached = false;
             return;
         }
 
@@ -187,11 +188,14 @@ class Graph {
         } else {
             this.points = new Array();
 
+            this.averageY = 0;
             this.highestY = -1;
             this.lowestY = 9999999999;
             this.highestX = -1;
             this.lowestX = 999999999999999;
-            for (var dataObj of this.data) {
+            for (var dataObj of this._data) {
+                this.averageY += dataObj.y;
+
                 if (dataObj.x > this.highestX) this.highestX = dataObj.x;
                 if (dataObj.x < this.lowestX) this.lowestX = dataObj.x;
 
@@ -200,8 +204,9 @@ class Graph {
             }
             this.xStretch = this.adjustedWidth / (this.highestX - this.lowestX);
             this.yStretch = this.adjustedHeight / (this.highestY - this.lowestY);
+            this.averageY /= this._data.length;
 
-            for (var d of this.data) {
+            for (var d of this._data) {
                 if (d.y > -1) this.points.push({ x: this.getAdjustedX(d.x), y: this.getAdjustedY(d.y) });
             }
 
