@@ -73,9 +73,9 @@ class Graph {
         });
     }
 
-/*    filterData(data) {
-        return data; TODO
-    }*/
+    filterData(d) {
+        return true;
+    }
 
     translateX(x) {
         return x;
@@ -176,7 +176,8 @@ class Graph {
     draw() {
         this.fixDPI();
 
-        if (this._data === undefined || this._data === null || this._data.length < 1) {
+        if (this._data === undefined || this._data === null || this._data.length < 1
+                || (this._pointsCached && (this.points === undefined || this.points === null || this.points.length < 1))) {
             this.ctx.beginPath();
             this.ctx.fillText('No Data to Display. Try another property', (this.canvas.width + this._paddingHorizantal) / 2 - 50, (this.canvas.height + this._paddingVertical) / 2);
             this.ctx.stroke();
@@ -207,8 +208,12 @@ class Graph {
             this.lowestY = 9999999999;
             this.highestX = -1;
             this.lowestX = 999999999999999;
+            var l = 0;
             for (var dataObj of this._data) {
+                if (!this.filterData(dataObj)) continue;
+
                 this.averageY += dataObj.y;
+                l++;
 
                 if (dataObj.x > this.highestX) this.highestX = dataObj.x;
                 if (dataObj.x < this.lowestX) this.lowestX = dataObj.x;
@@ -218,10 +223,10 @@ class Graph {
             }
             this.xStretch = this.adjustedWidth / (this.highestX - this.lowestX);
             this.yStretch = this.adjustedHeight / (this.highestY - this.lowestY);
-            this.averageY /= this._data.length;
+            this.averageY /= l;
 
             for (var d of this._data) {
-                if (d.y > -1) this.points.push({ x: this.getAdjustedX(d.x), y: this.getAdjustedY(d.y) });
+                if (d.y > -1 && this.filterData(d)) this.points.push({ x: this.getAdjustedX(d.x), y: this.getAdjustedY(d.y) });
             }
 
             this.pointsCached = true;

@@ -149,13 +149,6 @@ input {
     overflow: hidden;
 }
 
-#timeButtonsContainer {
-    margin: 0 auto;
-    margin-top: 15px;
-    justify-self: center;
-    order: 2
-}
-
 #canvasItemImageEnchanted, #canvasItemImage {
     order: 0;
 }
@@ -191,7 +184,16 @@ input {
 }
 
 #propertySelector {
-    
+    margin: 0 20px 0 0;
+    order: 5;
+}
+
+#propertySelector div {
+    display: none;
+}
+
+#propertySelector:hover div {
+    display: block;
 }
 
 /* Right side */
@@ -285,14 +287,44 @@ input {
 }
 
 /* Time buttons */
+#timeButtonsContainer {
+    align-self: flex-start;
+    margin: 0 auto;
+    margin-top: 12px;
+    justify-self: center;
+    order: 2;
+    display: flex;
+    align-items: center;
+}
+
 .timeButton {
     border: 2px solid black;
+    height: 20px;
     border-right: none;
     position: relative;
     padding: 2px 4px;
     transition-duration: 0.25s;
 }
 
-.timeButton:last-child {
+.timeButton:nth-last-child(2) {
     border-right: 2px solid black;
+}
+
+#rewind, #fastForward {
+    margin: 0 5px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid black;
+}
+
+#rewind:hover, #fastForward:hover {
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid #dbdbdb;
+}
+
+#fastForward {
+    transform: rotate(180deg);
 }

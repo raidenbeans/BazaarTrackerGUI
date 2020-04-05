@@ -206,9 +206,7 @@ graph.paddingVertical = 40;
 graph.lineWidth = 1;
 graph.strokeColor = "green";
 graph.lineColor = "#737373";
-graph.translateX = function(x) {
-    return translateX(x);
-}
+graph.translateX = translateX;
 graph.translateY = function(y) {
     var split = y.toString().split("\.");
     return split.length > 1 && split[1].length > 3 ? parseFloat(y).toFixed(3) : y;
@@ -348,3 +346,90 @@ window.addEventListener("resize", function() {
     graph.pointsCached = false;
     graph.draw();
 })
+
+/* Time Buttons */
+var timeButtonsChbxs = new Array();
+var tbYTD = document.getElementById("timeButtonAllChbx");
+var tbSixM = document.getElementById("timeButtonSixMChbx");
+var tbOneM = document.getElementById("timeButtonOneMChbx")
+var tbOneW = document.getElementById("timeButtonOneWChbx")
+var tbThreeD = document.getElementById("timeButtonThreeDChbx")
+var tbOneD = document.getElementById("timeButtonOneDChbx")
+timeButtonsChbxs.push(tbYTD);
+timeButtonsChbxs.push(tbSixM);
+timeButtonsChbxs.push(tbOneM);
+timeButtonsChbxs.push(tbOneW);
+timeButtonsChbxs.push(tbThreeD);
+timeButtonsChbxs.push(tbOneD);
+
+// Default time is YTD (Year to Date)
+graph.filterData = function() {
+    return true;
+}
+
+for (var tb of timeButtonsChbxs) {
+    tb.addEventListener("change", function() {
+        if (this.checked) {
+            rewind = 0;
+            this.parentElement.style.backgroundColor = selectedColor;
+            for (var tb1 of timeButtonsChbxs) {
+                if (tb1 !== this) {
+                    tb1.checked = false;
+                    tb1.parentElement.style.backgroundColor = "white";
+                }
+            }
+
+            graph.filterData = this === tbYTD ? function() { return true } : this === tbSixM ? filterSixM 
+                             : this === tbOneM ? filterOneM : this === tbOneW ? filterOneW : this === tbThreeD ? filterThreeD : filterOneD;
+            graph.pointsCached = false;
+            graph.draw();
+        }
+    });
+}
+
+/* Rewind/Fastforward and time button graph filters */
+var rewind = 0;
+
+document.getElementById("rewind").addEventListener("click", function() {
+    rewind++;
+    graph.pointsCached = false;
+    graph.draw();
+});
+
+document.getElementById("fastForward").addEventListener("click", function() {
+    if (rewind > 0) {
+        rewind--;
+        graph.pointsCached = false;
+        graph.draw();
+    }
+});
+
+function filterSixM(d) { // TODO consider days in the previous months
+    var s = (Date.now() - d.x) / 1000; // elapsed seconds
+    var t = 15778800; // # of seconds in six months
+    return s <= t + t * rewind && s >= (rewind - 1) * t;
+}
+
+function filterOneM(d) {
+    var s = (Date.now() - d.x) / 1000;
+    var t = 2629800;
+    return s <= t + t * rewind && s >= (rewind - 1) * t;
+}
+
+function filterOneW(d) {
+    var s = (Date.now() - d.x) / 1000;
+    var t = 604800;
+    return s <= t + t * rewind && s >= (rewind - 1) * t;
+}
+
+function filterThreeD(d) {
+    var s = (Date.now() - d.x) / 1000;
+    var t = 259200;
+    return s <= t + t * rewind && s >= (rewind - 1) * t;
+}
+
+function filterOneD(d) {
+    var s = (Date.now() - d.x) / 1000;
+    var t = 86400;
+    return s <= t + t * rewind && s >= (rewind - 1) * t;
+}
