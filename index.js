@@ -15,8 +15,7 @@ function loadJSONFile(file, callback) {
 }
 
 /* Add item buttons */
-//const filesDir = "productinfo/"
-const filesDir = "C:\\Users\\RaidenW\\Desktop\\BazaarTracker\\productinfo\\"
+const filesDir = "productinfo/"
 var itemButtonCheckboxes = new Array();
 loadJSONFile(filesDir + "categories.json", function(responseText) {
     var json = JSON.parse(responseText);

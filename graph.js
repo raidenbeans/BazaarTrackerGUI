@@ -52,7 +52,7 @@ class Graph {
                 var canvasYData = document.getElementById("canvasYData");
                 canvasYData.style.display = "block";
                 canvasYData.innerText = thisGraph.translateY(data.y);
-                canvasYData.style.left = data.adjustedX + "px";
+                canvasYData.style.left = (x + thisGraph.canvas.getBoundingClientRect().left) + "px";
                 var canvasXData = document.getElementById("canvasXData");
                 canvasXData.style.display = "block";
                 canvasXData.innerText = thisGraph.translateX(data.x);

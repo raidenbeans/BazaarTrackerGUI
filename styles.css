@@ -171,16 +171,15 @@ input {
     display: inline-block;
     align-self: flex-end;
     position: absolute;
-    margin: -10px 0 0 40%;
+    margin: -10px 0 0 37%;
     width: 20vw;
     order: 3;
 }
 
 #canvasYData {
     display: inline-block;
-    margin-top: 8px;
-    position: absolute;
-    align-self: flex-end;
+    margin-top: 69px;
+    position: fixed;
 }
 
 #propertySelector {
@@ -330,7 +329,7 @@ input {
 }
 
 #canvasTimeRange {
-    margin-top: -40px;
+    margin-top: -50px;
     width: 270px;
     text-align: center;
     position: absolute;
