@@ -363,9 +363,7 @@ timeButtonsChbxs.push(tbThreeD);
 timeButtonsChbxs.push(tbOneD);
 
 // Default time is YTD (Year to Date)
-graph.filterData = function() {
-    return true;
-}
+graph.filterData = function() { updateDate(); return true; }
 
 for (var tb of timeButtonsChbxs) {
     tb.addEventListener("change", function() {
@@ -379,7 +377,7 @@ for (var tb of timeButtonsChbxs) {
                 }
             }
 
-            graph.filterData = this === tbYTD ? function() { return true } : this === tbSixM ? filterSixM 
+            graph.filterData = this === tbYTD ? function() { updateDate(); return true; } : this === tbSixM ? filterSixM 
                              : this === tbOneM ? filterOneM : this === tbOneW ? filterOneW : this === tbThreeD ? filterThreeD : filterOneD;
             graph.pointsCached = false;
             graph.draw();
@@ -404,32 +402,43 @@ document.getElementById("fastForward").addEventListener("click", function() {
     }
 });
 
-function filterSixM(d) { // TODO consider days in the previous months
+function updateDate(s0, s1) {
+    const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+
+    var d0 = new Date(s0);
+    var d1 = s1 === 0 ? 0 : new Date(s1);
+
+    console.log()
+
+    document.getElementById("canvasTimeRange").innerText = s0 === undefined && s1 === undefined ? "All Time" 
+                                                         : "From " + d0.getDate() + " " + months[d0.getMonth()] + " " + d0.getFullYear() + " to " 
+                                                         + ((d1 === 0) ? "now" : d1.getDate() + " " + months[d1.getMonth()] + " " + d1.getFullYear());
+}
+
+function filter(d, seconds) { // TODO consider days in the previous months and optimize this
     var s = (Date.now() - d.x) / 1000; // elapsed seconds
-    var t = 15778800; // # of seconds in six months
-    return s <= t + t * rewind && s >= (rewind - 1) * t;
+    var s0 = seconds + seconds * rewind; // date farthest away from now in seconds
+    var s1 = rewind * seconds; // date closest to now in seconds
+    updateDate(Date.now() - s0 * 1000, rewind === 0 ? 0 : Date.now() - s1 * 1000);
+    return s <= s0 && s >= s1;
+}
+
+function filterSixM(d) {
+    return filter(d, 15778800);
 }
 
 function filterOneM(d) {
-    var s = (Date.now() - d.x) / 1000;
-    var t = 2629800;
-    return s <= t + t * rewind && s >= (rewind - 1) * t;
+    return filter(d, 2629800);
 }
 
 function filterOneW(d) {
-    var s = (Date.now() - d.x) / 1000;
-    var t = 604800;
-    return s <= t + t * rewind && s >= (rewind - 1) * t;
+    return filter(d, 604800);
 }
 
 function filterThreeD(d) {
-    var s = (Date.now() - d.x) / 1000;
-    var t = 259200;
-    return s <= t + t * rewind && s >= (rewind - 1) * t;
+    return filter(d, 259200);
 }
 
 function filterOneD(d) {
-    var s = (Date.now() - d.x) / 1000;
-    var t = 86400;
-    return s <= t + t * rewind && s >= (rewind - 1) * t;
+    return filter(d, 86400);
 }
