@@ -226,7 +226,7 @@ class Graph {
             this.averageY /= l;
 
             for (var d of this._data) {
-                if (d.y > -1 && this.filterData(d)) this.points.push({ x: this.getAdjustedX(d.x), y: this.getAdjustedY(d.y) });
+                if (d.y >= 0 && this.filterData(d)) this.points.push({ x: this.getAdjustedX(d.x), y: this.getAdjustedY(d.y) });
             }
 
             this.pointsCached = true;

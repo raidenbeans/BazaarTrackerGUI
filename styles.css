@@ -6,7 +6,7 @@
 }
 
 /* Anything that shouldnt be able to be selected */
-img {
+img, body {
     user-select: none;
     -moz-user-select: none;
     -webkit-user-drag: none;
@@ -183,12 +183,26 @@ input {
 }
 
 #propertySelector {
-    margin: 0 20px 0 0;
+    position: fixed;
+    right: 0;
     order: 5;
+    padding: 0;
+    z-index: 1;
+    line-height: 10px;
+    width: 230px;
+}
+
+#propertySelector div div {
+    background-color: white;
+    cursor: pointer;
+    width: fit-content;
+    margin: auto;
 }
 
 #propertySelector div {
     display: none;
+    margin: 0;
+    order: 1;
 }
 
 #propertySelector:hover div {
@@ -303,6 +317,7 @@ input {
     position: relative;
     padding: 2px 4px;
     transition-duration: 0.25s;
+    cursor: pointer;
 }
 
 .timeButton:nth-last-child(2) {
@@ -316,6 +331,7 @@ input {
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
     border-right: 10px solid black;
+    cursor: pointer;
 }
 
 #rewind:hover, #fastForward:hover {
