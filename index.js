@@ -209,6 +209,7 @@ loadJSONFile(baseURL + "files?data_properties", function (responseText) {
                 container1.style.backgroundColor = selectedColor;
                 properties.push(container2.id);
                 checkbox.checked = true;
+                document.getElementById("propertyIds").innerText = element;
             }
 
             checkbox.addEventListener("change", function() {
@@ -222,6 +223,11 @@ loadJSONFile(baseURL + "files?data_properties", function (responseText) {
                     } else {
                         this.checked = true;
                     }
+                }
+                document.getElementById("propertyIds").innerText = properties.length + " properties"
+
+                if (properties.length == 1) {
+                    document.getElementById("propertyIds").innerText = propertyTypes[propertyTypes.indexOf(properties[0]) + 1];
                 }
             });
         }
