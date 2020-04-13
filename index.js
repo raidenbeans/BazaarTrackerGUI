@@ -16,6 +16,11 @@ function loadJSONFile(file, callback) {
 }
 
 /* Add item buttons */
+var enchantedItems = [
+    "REVENANT_FLESH", "REVENANT_VISCERA", "TARANTULA_WEB", "TARANTULA_SILK", "WOLF_TOOTH", "GOLDEN_TOOTH", "HOT_POTATO_BOOK", "COMPACTOR",
+    "SUPER_COMPACTOR_3000", "HAMSTER_WHEEL", "CATALYST"
+];
+
 var itemButtonCheckboxes = new Array();
 function loadCategoriesFile() {
     loadJSONFile(baseURL + "files?categories", function (responseText) {
@@ -23,7 +28,7 @@ function loadCategoriesFile() {
         for (var categoryName in json) {
             for (var i = 0; i < json[categoryName].length; i += 2) {
                 var id = json[categoryName][i];
-                var isEnchanted = id.includes("ENCHANTED");
+                var isEnchanted = id.includes("ENCHANTED") || enchantedItems.includes(id);
                 var imgSrc = "assets/categories/buttons/" + id.replace(":", "+") + ".png";
 
                 var btn = document.createElement("label");
