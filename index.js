@@ -71,7 +71,7 @@ function loadCategoriesFile() {
                     selectedItemId = this.id.replace("Btn", "");
 
                     document.getElementById("canvasItemName").innerText = this.getAttribute("itemName");
-                    var isEnchanted = this.id.includes("ENCHANTED");
+                    var isEnchanted = this.id.includes("ENCHANTED") || enchantedItems.includes(selectedItemId);
                     var imgSrc = "assets/categories/buttons/" + this.id.replace("Btn", "").replace(":", "+") + ".png";
                     if (isEnchanted) {
                         var imgContainer = document.getElementById("canvasItemImageEnchanted");
