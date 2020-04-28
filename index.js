@@ -234,6 +234,7 @@ loadJSONFile(baseURL + "files?data_properties", function (responseText) {
                 if (properties.length == 1) {
                     document.getElementById("propertyIds").innerText = propertyTypes[propertyTypes.indexOf(properties[0]) + 1];
                 }
+                updateCanvas(true);
             });
         }
         prevElement = element;
@@ -255,14 +256,15 @@ graph.translateY = function(y) {
     return split.length > 1 && split[1].length > 3 ? parseFloat(y).toFixed(3) : y;
 }
 var prevSelectedItemId = null;
-function updateCanvas() {
-    document.getElementById("loading").style.display = "block";
-    if (prevSelectedItemId !== selectedItemId) {
+function updateCanvas(refresh) {
+    if (refresh || prevSelectedItemId !== selectedItemId) {
+        document.getElementById("loading").style.display = "block";
         loadJSONFile(baseURL + "products?productId=" + selectedItemId + "&property=" + properties[0], function (responseText) {
             document.getElementById("loading").style.display = "none";
             graph.jsonData = JSON.parse(responseText).response; // TODO check if success == false
             drawGraph();
         });
+        prevSelectedItemId = selectedItemId;
     } else {
         drawGraph();
     }
@@ -302,7 +304,13 @@ function drawGraph() {
 window.addEventListener("resize", function() {
     graph.pointsCached = false;
     graph.draw();
-})
+});
+
+/* Auto-refresh timer */
+const refreshRate = 180_000;
+setInterval(() => {
+    updateCanvas(true);
+}, refreshRate);
 
 /* Time Buttons */
 var timeButtonsChbxs = new Array();
