@@ -31,7 +31,7 @@ class Graph {
         this._strokeColor = "black";
         this._fillColor = "white";
 
-        var thisGraph = this; // TODO optimize
+        var thisGraph = this;
         this.canvas.addEventListener("mousemove", function(event) {
             if (thisGraph.points !== undefined && thisGraph.points.length > 0) {
                 var x = event.clientX < thisGraph.canvas.getBoundingClientRect().left ? 0 : event.clientX > thisGraph.canvas.getBoundingClientRect().right ? thisGraph.canvas.getBoundingClientRect().right : event.clientX - thisGraph.canvas.getBoundingClientRect().left;
@@ -178,10 +178,6 @@ class Graph {
 
         if (this._data === undefined || this._data === null || this._data.length < 1
                 || (this._pointsCached && (this.points === undefined || this.points === null || this.points.length < 1))) {
-            this.ctx.beginPath();
-            this.ctx.fillText('No Data to Display. Try another property', (this.canvas.width + this._paddingHorizantal) / 2 - 50, (this.canvas.height + this._paddingVertical) / 2);
-            this.ctx.stroke();
-            this._pointsCached = false;
             return;
         }
 
@@ -234,6 +230,14 @@ class Graph {
         }
     }
 
+    drawText(text) {
+        this.fixDPI();
+
+        this.ctx.beginPath();
+        this.ctx.fillText(text, (this.canvas.width + this._paddingHorizantal) / 2 - 50, (this.canvas.height + this._paddingVertical) / 2);
+        this.ctx.stroke();
+    }
+
     fixDPI() {
         var dpi = window.devicePixelRatio;
         
@@ -242,6 +246,12 @@ class Graph {
 
         this.adjustedHeight = this.canvas.height - this._paddingVertical;
         this.adjustedWidth = this.canvas.width - this._paddingHorizantal;
+    }
+
+    clearDataCaches() {
+        this._jsonData = "";
+        this._points = [];
+        this._data = [];
     }
 
     getAdjustedX(x) {

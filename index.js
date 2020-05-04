@@ -24,7 +24,7 @@ var enchantedItems = [
 var itemButtonCheckboxes = new Array();
 function loadCategoriesFile() {
     loadJSONFile(baseURL + "files?categories", function (responseText) {
-        var json = JSON.parse(responseText).response;
+        var json = JSON.parse(responseText).response;;
         for (var categoryName in json) {
             for (var i = 0; i < json[categoryName].length; i += 2) {
                 var id = json[categoryName][i];
@@ -155,12 +155,17 @@ document.getElementById("rightArrow").addEventListener("mouseleave", function() 
 })
 
 document.getElementById("rightArrow").addEventListener("click", function() {
+    var right = document.getElementById("right");
+
     this.style.display = "none";
     products.style.marginLeft = "0px";
     products.clicked = true;
+
     document.getElementById("divider").style.left = "var(--divider-left-space)";
     document.getElementById("rightArrow").style.display = "none";
-    var right = document.getElementById("right");
+    document.getElementById("canvasYData").style.display = "none";
+    document.getElementById("canvasXData").style.display = "none";
+
     right.style.width = "var(--right-side-width)";
     right.style.left = "var(--divider-left-space)"
     right.style.margin = "75px 0 0 0";
@@ -256,12 +261,38 @@ graph.translateY = function(y) {
     return split.length > 1 && split[1].length > 3 ? parseFloat(y).toFixed(3) : y;
 }
 var prevSelectedItemId = null;
+var retryAmount = 0;
+const maxRetryAmount = 3;
 function updateCanvas(refresh) {
     if (refresh || prevSelectedItemId !== selectedItemId) {
         document.getElementById("loading").style.display = "block";
         loadJSONFile(baseURL + "products?productId=" + selectedItemId + "&property=" + properties[0], function (responseText) {
             document.getElementById("loading").style.display = "none";
-            graph.jsonData = JSON.parse(responseText).response; // TODO check if success == false
+            try {
+                var json = JSON.parse(responseText);
+
+                if (!json.success) {
+                    if (retryAmount === maxRetryAmount) {
+                        retryAmount = 0;
+                    } else {
+                        retryAmount++;
+                        updateCanvas(true);
+                    }
+
+                    graph.drawText("Error encountered while reading JSON. See console for more details");
+                    console.log("Server side error while reading JSON. Success=false. ItemID='" + selectedItemId + "'. property='" + properties[0] + "'");
+                    graph.clearDataCaches();
+                    return;
+                }
+
+                graph.jsonData = json.response;
+            } catch (e) {
+                graph.drawText("Error encountered while reading JSON. See console for more details");
+                console.error(e);
+                graph.clearDataCaches();
+                return;
+            }
+
             drawGraph();
         });
         prevSelectedItemId = selectedItemId;
