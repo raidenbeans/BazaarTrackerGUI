@@ -1,10 +1,9 @@
 /* Utils */
 const selectedColor = "#dbdbdb"
 var selectedItemId;
-var xhr;
 const baseURL = "http://bazaargraph.xyz:7000/";
 function loadJSONFile(file, callback) {
-    xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
     xhr.overrideMimeType("application/json");
     xhr.open("GET", file, true);
     xhr.onreadystatechange = function() {
@@ -15,16 +14,103 @@ function loadJSONFile(file, callback) {
     xhr.send(null);
 }
 
+function formatNumberString(num, decimals) {
+    num = parseFloat(num);
+    var str = num.toString().includes(".") ? num.toString().split(".")[0] : num.toString();
+
+    var finalStr = [];
+    var j = str.length + parseInt(str.length / 3);
+    for (var i = 0; i < str.length; i++) {
+        if (i !== 0 && i % 3 === 0) {
+            finalStr[j] = ",";
+            j--;
+        }
+        finalStr[j] = str[str.length - 1 - i];
+        j--;
+    }
+
+    return finalStr.join("") + (num.toString().includes(".") ? "." + num.toFixed(decimals).toString().split(".")[1] : "");
+}
+
 /* Add item buttons */
 var enchantedItems = [
     "REVENANT_FLESH", "REVENANT_VISCERA", "TARANTULA_WEB", "TARANTULA_SILK", "WOLF_TOOTH", "GOLDEN_TOOTH", "HOT_POTATO_BOOK", "COMPACTOR",
     "SUPER_COMPACTOR_3000", "HAMSTER_WHEEL", "CATALYST"
 ];
 
+var centsPrecision = 10000;
+function updateAverageLabel(id, avg) {
+    var avgBuyPrice = avg.averageHighestBuyPrice / avg.averageHighestBuyPriceCount / centsPrecision;
+    var avgSellPrice = avg.averageLowestSellPrice / avg.averageLowestSellPriceCount / centsPrecision;
+    var curBuyPrice = avg.currentHighestBuyPrice / centsPrecision;
+    var curSellPrice = avg.currentLowestSellPrice / centsPrecision;
+
+    var pAvgBuy = document.getElementById("avgBuy" + id);
+    pAvgBuy.textContent = "Buy\n" + formatNumberString(avgBuyPrice, 2);
+    pAvgBuy.innerText = pAvgBuy.textContent;
+
+    var buyArrow = document.getElementById("buyArrow" + id);
+    if (curBuyPrice === avgBuyPrice) {
+        buyArrow.classList.remove("statusArrowUp");
+        buyArrow.classList.remove("statusArrowDown");
+        buyArrow.classList.add("statusArrowNeutral");
+    } else if (curBuyPrice > avgBuyPrice) {
+        buyArrow.classList.remove("statusArrowNeutral");
+        buyArrow.classList.remove("statusArrowDown");
+        buyArrow.classList.add("statusArrowUp");
+    } else {
+        buyArrow.classList.remove("statusArrowNeutral");
+        buyArrow.classList.remove("statusArrowUp");
+        buyArrow.classList.add("statusArrowDown");
+    }
+
+    var sellArrow = document.getElementById("sellArrow" + id);
+    if (curSellPrice === avgSellPrice) {
+        sellArrow.classList.remove("statusArrowUp");
+        sellArrow.classList.remove("statusArrowDown");
+        sellArrow.classList.add("statusArrowNeutral");
+    } else if (curBuyPrice > curSellPrice) {
+        sellArrow.classList.remove("statusArrowNeutral");
+        sellArrow.classList.remove("statusArrowDown");
+        sellArrow.classList.add("statusArrowUp");
+    } else {
+        sellArrow.classList.remove("statusArrowNeutral");
+        sellArrow.classList.remove("statusArrowUp");
+        sellArrow.classList.add("statusArrowDown");
+    }
+
+    var pAvgSell = document.getElementById("avgSell" + id);
+    pAvgSell.textContent = "Sell\n" + formatNumberString(avgSellPrice, 2);
+    pAvgSell.innerText = pAvgSell.textContent;
+}
+
+loadCategoriesFile();
+loadAveragesFile();
 var itemButtonCheckboxes = new Array();
+var averages = null;
+var categoriesLoaded = false;
+function loadAveragesFile() {
+    loadJSONFile(baseURL + "files?product_averages", function(responseText1) {
+        var json = JSON.parse(responseText1);
+
+        if (json.success) {
+            centsPrecision = json.response.CENTS_PRECISION;
+            averages = json.response.averages;
+            
+            if (categoriesLoaded) {
+                for (var id in averages) {
+                    updateAverageLabel(id, averages[id]);
+                }
+            }
+        }
+    });
+}
+
 function loadCategoriesFile() {
     loadJSONFile(baseURL + "files?categories", function (responseText) {
-        var json = JSON.parse(responseText).response;;
+        var json = JSON.parse(responseText).response;
+        categoriesLoaded = true;
+
         for (var categoryName in json) {
             for (var i = 0; i < json[categoryName].length; i += 2) {
                 var id = json[categoryName][i];
@@ -34,7 +120,7 @@ function loadCategoriesFile() {
                 var btn = document.createElement("label");
                 btn.setAttribute("itemName", json[categoryName][i + 1]);
                 btn.setAttribute("class", "itemButton");
-                btn.setAttribute("id", id + "Btn")
+                btn.setAttribute("id", id + "Btn");
                 document.getElementById(categoryName + "Btn").parentElement.childNodes.forEach(function (node) {
                     if (node.className === "dropdownContent") {
                         node.appendChild(btn);
@@ -64,8 +150,37 @@ function loadCategoriesFile() {
 
                 var p = document.createElement("p");
                 p.textContent = json[categoryName][i + 1];
-                p.innerText = json[categoryName][i + 1];
+                p.innerText = p.textContent;
                 btn.appendChild(p);
+
+                var buyContainer = document.createElement("div");
+                buyContainer.classList.add("buyContainer");
+                btn.appendChild(buyContainer);
+
+                var pAvgBuy = document.createElement("p");
+                pAvgBuy.classList.add("avgBuy");
+                pAvgBuy.id = "avgBuy" + id;
+                buyContainer.appendChild(pAvgBuy);
+
+                var buyArrow = document.createElement("div");
+                buyArrow.id = "buyArrow" + id;
+                buyArrow.classList.add("statusArrow");
+                buyContainer.appendChild(buyArrow);
+
+                var sellContainer = document.createElement("div");
+                sellContainer.classList.add("sellContainer");
+                btn.appendChild(sellContainer);
+
+                var pAvgSell = document.createElement("p");
+                pAvgSell.id = "avgSell" + id;
+                sellContainer.appendChild(pAvgSell);
+
+                var sellArrow = document.createElement("div");
+                sellArrow.id = "sellArrow" + id;
+                sellArrow.classList.add("statusArrow");
+                sellContainer.appendChild(sellArrow);
+
+                if (averages !== null) updateAverageLabel(id, averages[id]);
 
                 btn.addEventListener("click", function () {
                     selectedItemId = this.id.replace("Btn", "");
@@ -158,7 +273,7 @@ document.getElementById("rightArrow").addEventListener("click", function() {
     var right = document.getElementById("right");
 
     this.style.display = "none";
-    products.style.marginLeft = "0px";
+    products.style.marginLeft = "0px"; // TODO averages
     products.clicked = true;
 
     document.getElementById("divider").style.left = "var(--divider-left-space)";
@@ -191,8 +306,6 @@ for (var chbx of categoryCheckboxes) {
 /* Graph management */
 const propertyTypes = new Array();
 loadJSONFile(baseURL + "files?data_properties", function (responseText) {
-    loadCategoriesFile();
-
     var json = JSON.parse(responseText).response;
     var i = 0;
     var prevElement;
@@ -257,14 +370,13 @@ graph.strokeColor = "green";
 graph.lineColor = "#737373";
 graph.translateX = translateX;
 graph.translateY = function(y) {
-    var split = y.toString().split("\.");
-    return split.length > 1 && split[1].length > 3 ? parseFloat(y).toFixed(3) : y;
+    return formatNumberString(y, 2);
 }
 var prevSelectedItemId = null;
 var retryAmount = 0;
 const maxRetryAmount = 3;
 function updateCanvas(refresh) {
-    if (refresh || prevSelectedItemId !== selectedItemId) {
+    if ((selectedItemId != undefined && selectedItemId != null) && (refresh || prevSelectedItemId !== selectedItemId)) {
         document.getElementById("loading").style.display = "block";
         loadJSONFile(baseURL + "products?productId=" + selectedItemId + "&property=" + properties[0], function (responseText) {
             document.getElementById("loading").style.display = "none";
@@ -341,6 +453,7 @@ window.addEventListener("resize", function() {
 const refreshRate = 180_000;
 setInterval(() => {
     updateCanvas(true);
+    loadAveragesFile();
 }, refreshRate);
 
 /* Time Buttons */
